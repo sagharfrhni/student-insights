@@ -9,3 +9,8 @@ def get_db_connection():
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
+
+class AnalyticsEngine:
+
+    def __init__(self, user_id=1):
+        self.user_id = user_id
