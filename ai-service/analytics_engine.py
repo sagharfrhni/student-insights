@@ -103,3 +103,31 @@ class AnalyticsEngine:
                 }
             ],
         }
+
+    def get_course_distribution(self):
+        conn = get_db_connection()
+
+        rows = conn.execute(
+            """
+            SELECT
+                Courses.Name,
+                SUM(StudyLogs.DurationMinutes)/60.0 as hours
+            FROM StudyLogs
+            JOIN Courses
+                ON Courses.Id=StudyLogs.CourseId
+            WHERE StudyLogs.UserId=?
+            GROUP BY Courses.Name
+        """,
+            (self.user_id,),
+        ).fetchall()
+
+        conn.close()
+
+        return {
+            "labels": [r["Name"] for r in rows],
+            "datasets": [
+                {
+                    "data": [round(r["hours"], 1) for r in rows],
+                }
+            ],
+        }
