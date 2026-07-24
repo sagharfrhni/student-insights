@@ -67,3 +67,39 @@ class AnalyticsEngine:
             "average_grade": round(avg_grade, 2),
             "task_completion_rate": completion,
         }
+
+    def get_weekly_trend(self):
+        conn = get_db_connection()
+
+        rows = conn.execute(
+            """
+            SELECT
+                DATE(StudyDateUtc) as day,
+                SUM(DurationMinutes)/60.0 as hours
+            FROM StudyLogs
+            WHERE UserId=?
+            GROUP BY DATE(StudyDateUtc)
+            ORDER BY day
+            LIMIT 7
+        """,
+            (self.user_id,),
+        ).fetchall()
+
+        conn.close()
+
+        labels = []
+        data = []
+
+        for row in rows:
+            labels.append(row["day"])
+            data.append(round(row["hours"], 1))
+
+        return {
+            "labels": labels,
+            "datasets": [
+                {
+                    "label": "Study Hours",
+                    "data": data,
+                }
+            ],
+        }
