@@ -214,3 +214,11 @@ class AnalyticsEngine:
             },
             "ai_insights": self.generate_ai_insights(),
         }
+if __name__ == "__main__":
+    import json
+
+    engine = AnalyticsEngine(user_id=1)
+    
+  
+    result = engine.get_dashboard_data()
+    print(json.dumps(result, ensure_ascii=False, indent=4))
