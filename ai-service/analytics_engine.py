@@ -184,3 +184,33 @@ class AnalyticsEngine:
                 }
             ],
         }
+
+    def generate_ai_insights(self):
+        cards = self.get_summary_cards()
+        insights = []
+
+        if cards["task_completion_rate"] < 60:
+            insights.append("Complete your pending tasks before starting new ones.")
+            
+        if cards["average_grade"] < 15:
+            insights.append("Your average grade is below target. Increase weekly study time.")
+            
+        if cards["total_study_hours"] < 5:
+            insights.append("Study time is lower than recommended this week.")
+
+        if not insights:
+            insights.append("Excellent progress. Keep up the good work!")
+
+        return insights
+
+    def get_dashboard_data(self):
+        return {
+            "summary_cards": self.get_summary_cards(),
+            "charts": {
+                "weekly_trend": self.get_weekly_trend(),
+                "course_distribution": self.get_course_distribution(),
+                "task_status": self.get_task_status(),
+                "grade_trend": self.get_grade_trend(),
+            },
+            "ai_insights": self.generate_ai_insights(),
+        }
