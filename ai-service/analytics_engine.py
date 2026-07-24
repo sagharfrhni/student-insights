@@ -131,3 +131,56 @@ class AnalyticsEngine:
                 }
             ],
         }
+
+    def get_task_status(self):
+        conn = get_db_connection()
+
+        rows = conn.execute(
+            """
+            SELECT
+                Status,
+                COUNT(*) as total
+            FROM LearningActivities
+            WHERE UserId=?
+            GROUP BY Status
+        """,
+            (self.user_id,),
+        ).fetchall()
+
+        conn.close()
+
+        return {
+            "labels": [r["Status"] for r in rows],
+            "datasets": [
+                {
+                    "data": [r["total"] for r in rows],
+                }
+            ],
+        }
+
+    def get_grade_trend(self):
+        conn = get_db_connection()
+
+        rows = conn.execute(
+            """
+            SELECT
+                ExamDateUtc,
+                Grade
+            FROM Exams
+            WHERE UserId=?
+            ORDER BY ExamDateUtc
+        """,
+            (self.user_id,),
+        ).fetchall()
+
+        conn.close()
+
+        return {
+            "labels": [r["ExamDateUtc"][:10] for r in rows],
+            "datasets": [
+                {
+                    "label": "Grade",
+                    "data": [r["Grade"] for r in rows],
+                }
+            ],
+        }
