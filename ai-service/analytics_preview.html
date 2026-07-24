@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>
+Analytics Dashboard Preview
+</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+
+<h1>
+Student Analytics Dashboard
+</h1>
+
+
+<h2>Weekly Study</h2>
+
+<canvas id="studyChart"></canvas>
+
+
+<h2>Course Distribution</h2>
+
+<canvas id="courseChart"></canvas>
+
+
+<h2>Task Status</h2>
+
+<canvas id="taskChart"></canvas>
+
+
+
+
+<script>
+
+
+new Chart(
+document.getElementById("studyChart"),
+{
+
+type:"line",
+
+data:{
+
+labels:[
+"2026-07-20",
+"2026-07-21",
+"2026-07-22",
+"2026-07-23"
+],
+
+datasets:[{
+
+label:"Study Hours",
+
+data:[
+2,
+1.5,
+1,
+3
+]
+
+}]
+
+}
+
+}
+
+);
+
+
+
+
+new Chart(
+document.getElementById("courseChart"),
+{
+
+type:"bar",
+
+data:{
+
+labels:[
+"ریاضی عمومی",
+"هوش مصنوعی",
+"پایگاه داده"
+],
+
+datasets:[{
+
+label:"Hours",
+
+data:[
+3.5,
+3,
+1
+]
+
+}]
+
+}
+
+}
+
+);
+
+
+
+
+new Chart(
+document.getElementById("taskChart"),
+{
+
+type:"doughnut",
+
+data:{
+
+labels:[
+"Completed",
+"Pending"
+],
+
+datasets:[{
+
+data:[
+2,
+1
+]
+
+}]
+
+}
+
+}
+
+);
+
+
+</script>
+
+
+</body>
+
+</html>
