@@ -64,6 +64,8 @@ html, body {
 }
 
 .start-btn {
+    text-decoration: none; 
+    display: inline-block; 
     background-color: var(--btn-bg);
     color: var(--btn-text);
     font-size: 1.1rem;
