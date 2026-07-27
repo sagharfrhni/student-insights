@@ -1,0 +1,105 @@
+.register-card {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 32px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    direction: rtl;
+    text-align: right;
+  }
+  
+  .register-card h2 {
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: #111;
+  }
+  
+  .register-subtitle {
+    margin-bottom: 24px;
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+  }
+  
+  .form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #222;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    direction: rtl;
+    text-align: right;
+  }
+  
+  .form-group input::placeholder {
+    color: #999;
+    text-align: right;
+  }
+  
+  .register-submit-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+  
+  .register-submit-btn:hover {
+    opacity: 0.9;
+  }
+  
+  .register-submit-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  
+  .error-message {
+    margin-bottom: 16px;
+    color: red;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .auth-switch {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .auth-switch p {
+    margin-bottom: 8px;
+    color: #555;
+  }
+  
+  .auth-switch a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .auth-switch a:hover {
+    text-decoration: underline;
+  }
+  
