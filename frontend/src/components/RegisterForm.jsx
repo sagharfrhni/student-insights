@@ -1,23 +1,18 @@
 import React, { useState } from 'react';
-// import { useNavigate } from 'react-router-dom'; // بعداً برای هدایت کاربر اضافه میشه
-// import authService from '../services/authService'; // بعداً برای صدا زدن API استفاده میشه
 
 export default function RegisterForm() {
-  const [fullName, setFullName] = useState(''); // نام کامل
-  const [email, setEmail] = useState(''); // ایمیل
-  const [password, setPassword] = useState(''); // رمز عبور
-  const [confirmPassword, setConfirmPassword] = useState(''); // تکرار رمز عبور
-  const [isLoading, setIsLoading] = useState(false); // وضعیت بارگذاری
-  const [error, setError] = useState(''); // پیام خطا
-
-  // const navigate = useNavigate(); // برای هدایت کاربر
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // جلوگیری از رفرش صفحه
-    setError(''); // پاک کردن خطاهای قبلی
+    e.preventDefault();
+    setError('');
     setIsLoading(true);
 
-    // --- اعتبارسنجی اولیه سمت کلاینت ---
     if (!fullName || !email || !password || !confirmPassword) {
       setError('لطفاً تمام فیلدها را پر کنید.');
       setIsLoading(false);
@@ -29,102 +24,86 @@ export default function RegisterForm() {
       setIsLoading(false);
       return;
     }
-    // --- پایان اعتبارسنجی ---
 
     try {
-      // console.log('Attempting registration with:', { fullName, email, password });
-      // alert(`در حال ثبت نام با اطلاعات: نام: ${fullName}, ایمیل: ${email}`); // پیام تست اولیه
-
-      // *** اینجا تابع ثبت نام از authService صدا زده میشه ***
-      // مثال: const response = await authService.registerUser({ name: fullName, email, password });
-      // console.log('Registration response:', response);
-
-      // شبیه سازی تاخیر پاسخ API
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      alert('ثبت نام شما با موفقیت انجام شد!');
-      // navigate('/login'); // هدایت به صفحه ورود بعد از ثبت نام موفق
-      // فعلاً با alert نمایش داده میشه
-
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      alert('ثبت‌نام شما با موفقیت انجام شد!');
     } catch (err) {
-      console.error('Registration error:', err);
-      // نمایش پیام خطای دقیق‌تر در صورت وجود در پاسخ API
-      setError(err.response?.data?.message || 'خطا در ثبت نام. لطفاً دوباره امتحان کنید.');
+      setError(err.response?.data?.message || 'خطا در ثبت‌نام. لطفاً دوباره امتحان کنید.');
     } finally {
-      setIsLoading(false); // غیرفعال کردن دکمه و نمایش لودینگ
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="register-card"> {/* کلاس CSS برای استایل دهی */}
-      <h2>ایجاد حساب کاربری</h2> {/* عنوان صفحه به فارسی */}
-      <p>به دنیای StudentHub AI بپیوندید</p> {/* متن زیر عنوان به فارسی */}
+    <div className="register-card">
+      <h2>ایجاد حساب کاربری</h2>
+      <p className="register-subtitle">همین حالا در StudentHub AI ثبت‌نام کنید</p>
 
-      {error && <p className="error-message" style={{ color: 'red', textAlign: 'center', marginBottom: '10px' }}>{error}</p>} {/* نمایش پیام خطا */}
+      {error && <p className="error-message">{error}</p>}
 
       <form id="register-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="register-full-name">نام کامل</label> {/* لیبل به فارسی */}
+          <label htmlFor="register-full-name">نام کامل</label>
           <input
             type="text"
             id="register-full-name"
             name="fullName"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            placeholder="نام کامل خود را وارد کنید" // Placeholder به فارسی
+            placeholder="نام کامل خود را وارد کنید"
             required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="register-email">آدرس ایمیل</label> {/* لیبل به فارسی */}
+          <label htmlFor="register-email">آدرس ایمیل</label>
           <input
             type="email"
             id="register-email"
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="ایمیل خود را وارد کنید" // Placeholder به فارسی
+            placeholder="ایمیل خود را وارد کنید"
             required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="register-password">رمز عبور</label> {/* لیبل به فارسی */}
+          <label htmlFor="register-password">رمز عبور</label>
           <input
             type="password"
             id="register-password"
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="رمز عبور خود را وارد کنید" // Placeholder به فارسی
+            placeholder="رمز عبور خود را وارد کنید"
             required
-            minLength="6" // حداقل طول رمز عبور
+            minLength="6"
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="register-confirm-password">تأیید رمز عبور</label> {/* لیبل به فارسی */}
+          <label htmlFor="register-confirm-password">تأیید رمز عبور</label>
           <input
             type="password"
             id="register-confirm-password"
             name="confirmPassword"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="رمز عبور خود را دوباره وارد کنید" // Placeholder به فارسی
+            placeholder="رمز عبور را دوباره وارد کنید"
             required
           />
         </div>
 
-        <button type="submit" id="register-submit-btn" disabled={isLoading} style={{ width: '100%', padding: '10px', marginTop: '20px', backgroundColor: '#000', color: 'white', border: 'none', borderRadius: '5px', cursor: isLoading ? 'not-allowed' : 'pointer' }}>
-          {isLoading ? 'در حال ایجاد حساب...' : 'ایجاد حساب کاربری'} {/* متن دکمه به فارسی */}
+        <button type="submit" className="register-submit-btn" disabled={isLoading}>
+          {isLoading ? 'در حال ایجاد حساب...' : 'ایجاد حساب کاربری'}
         </button>
       </form>
 
-      <div className="auth-switch" style={{ textAlign: 'center', marginTop: '15px', fontSize: '0.9em' }}>
-        <p>قبلاً حساب کاربری دارید؟</p> {/* متن به فارسی */}
-        {/* <Link to="/login">Log in</Link> */}
-        <a href="/login" style={{ color: '#007bff', textDecoration: 'none' }}>وارد شوید</a> {/* لینک ورود به فارسی */}
+      <div className="auth-switch">
+        <p>قبلاً حساب کاربری دارید؟</p>
+        <a href="/login">وارد شوید</a>
       </div>
     </div>
   );

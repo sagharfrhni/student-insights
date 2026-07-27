@@ -14,15 +14,6 @@
             {currentPage === 'register' && <RegisterPage />}
           </main>
           {/* <Footer /> */}
-
-          {/* دکمه برای جابجایی */}
-          <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            {currentPage === 'login' ? (
-              <button onClick={() => setCurrentPage('register')}>رفتن به ثبت نام</button>
-            ) : (
-              <button onClick={() => setCurrentPage('login')}>رفتن به ورود</button>
-            )}
-          </div>
         </div>
       );
     }
