@@ -1,0 +1,97 @@
+.courses-page-container {
+    padding: 20px;
+    direction: rtl; /* راست‌چین برای فارسی */
+    font-family: 'Tahoma', sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-title {
+    border-right: 5px solid #4a90e2;
+    padding-right: 15px;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+/* طراحی شبکه کارت‌ها */
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 50px;
+}
+
+.course-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease-in-out;
+    border: 1px solid #eee;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+}
+
+.course-name {
+    color: #2c3e50;
+    margin-top: 0;
+}
+
+.course-instructor, .course-time {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin: 5px 0;
+}
+
+.course-badge {
+    background: #e1f5fe;
+    color: #0288d1;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    width: fit-content;
+    margin: 10px 0;
+}
+
+.details-btn {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.details-btn:hover {
+    background-color: #357abd;
+}
+
+/* بخش جدول زمان‌بندی */
+.schedule-section {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.schedule-placeholder {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #ccc;
+    color: #999;
+    border-radius: 10px;
+}
