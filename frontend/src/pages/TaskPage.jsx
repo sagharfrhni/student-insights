@@ -1,20 +1,19 @@
-// TaskPage.jsx
 import React, { useMemo, useState } from "react";
 import "./TaskPage.css";
 
 const mockCourses = [
-  { id: 101, name: "Data Structures" },
-  { id: 102, name: "Database Design" },
-  { id: 103, name: "Web Development" },
+  { id: 101, name: "ساختمان داده" },
+  { id: 102, name: "طراحی پایگاه داده" },
+  { id: 103, name: "توسعه وب" },
 ];
 
 const initialTasks = [
   {
     id: 1,
     courseId: 101,
-    courseName: "Data Structures",
-    title: "Homework 1",
-    description: "Linked list exercises and implementation.",
+    courseName: "ساختمان داده",
+    title: "تمرین ۱",
+    description: "تمرین‌ها و پیاده‌سازی لیست پیوندی.",
     type: 0,
     priority: 2,
     status: 0,
@@ -23,9 +22,9 @@ const initialTasks = [
   {
     id: 2,
     courseId: 102,
-    courseName: "Database Design",
-    title: "Midterm Exam",
-    description: "Chapters 1 to 5.",
+    courseName: "طراحی پایگاه داده",
+    title: "امتحان میان‌ترم",
+    description: "فصل‌های ۱ تا ۵.",
     type: 1,
     priority: 2,
     status: 0,
@@ -34,9 +33,9 @@ const initialTasks = [
   {
     id: 3,
     courseId: 103,
-    courseName: "Web Development",
-    title: "Project Report",
-    description: "Submit the final PDF report.",
+    courseName: "توسعه وب",
+    title: "گزارش پروژه",
+    description: "فایل نهایی PDF را ارسال کنید.",
     type: 0,
     priority: 1,
     status: 1,
@@ -45,27 +44,27 @@ const initialTasks = [
 ];
 
 const typeLabel = {
-  0: "Assignment",
-  1: "Exam",
+  0: "تکلیف",
+  1: "امتحان",
 };
 
 const priorityLabel = {
-  0: "Low",
-  1: "Medium",
-  2: "High",
+  0: "کم",
+  1: "متوسط",
+  2: "زیاد",
 };
 
 const statusLabel = {
-  0: "Pending",
-  1: "Completed",
-  2: "Cancelled",
+  0: "در انتظار",
+  1: "تکمیل‌شده",
+  2: "لغوشده",
 };
 
 function formatDateTime(value) {
   if (!value) return "-";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "-";
-  return date.toLocaleString("en-US");
+  return date.toLocaleString("fa-IR");
 }
 
 export default function TaskPage() {
@@ -137,7 +136,7 @@ export default function TaskPage() {
     const payload = {
       id: editingTaskId ?? Date.now(),
       courseId: Number(formData.courseId),
-      courseName: course?.name ?? "Unknown Course",
+      courseName: course?.name ?? "درس نامشخص",
       title: formData.title.trim(),
       description: formData.description.trim(),
       type: Number(formData.type),
@@ -168,7 +167,7 @@ export default function TaskPage() {
   };
 
   const deleteTask = (taskId) => {
-    const confirmed = window.confirm("Are you sure you want to delete this task?");
+    const confirmed = window.confirm("آیا از حذف این وظیفه مطمئن هستید؟");
     if (!confirmed) return;
     setTasks((prev) => prev.filter((task) => task.id !== taskId));
   };
@@ -177,9 +176,9 @@ export default function TaskPage() {
     <div className="task-page">
       <header className="task-page__header">
         <div>
-          <h1 className="task-page__title">Academic Tasks</h1>
+          <h1 className="task-page__title">وظایف آموزشی</h1>
           <p className="task-page__subtitle">
-            Manage assignments and exams in one place.
+            تکالیف و امتحان‌ها را در یک مکان مدیریت کنید.
           </p>
         </div>
 
@@ -189,23 +188,23 @@ export default function TaskPage() {
           className="btn btn--primary"
           onClick={openAddModal}
         >
-          + Add Task
+          + افزودن وظیفه
         </button>
       </header>
 
       <section className="task-page__filters">
         <label className="filter-group" htmlFor="filter-task-status">
-          <span className="filter-group__label">Status</span>
+          <span className="filter-group__label">وضعیت</span>
           <select
             id="filter-task-status"
             className="filter-group__select"
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
-            <option value="all">All</option>
-            <option value="0">Pending</option>
-            <option value="1">Completed</option>
-            <option value="2">Cancelled</option>
+            <option value="all">همه</option>
+            <option value="0">در انتظار</option>
+            <option value="1">تکمیل‌شده</option>
+            <option value="2">لغوشده</option>
           </select>
         </label>
       </section>
@@ -213,8 +212,8 @@ export default function TaskPage() {
       <main id="task-list-container" className="task-list">
         {filteredTasks.length === 0 ? (
           <div className="empty-state">
-            <h2>No tasks found</h2>
-            <p>Try changing the filter or add a new task.</p>
+            <h2>وظیفه‌ای پیدا نشد</h2>
+            <p>فیلتر را تغییر دهید یا یک وظیفه جدید اضافه کنید.</p>
           </div>
         ) : (
           filteredTasks.map((task) => (
@@ -235,13 +234,13 @@ export default function TaskPage() {
 
                 <div className="task-card__meta">
                   <span>
-                    <strong>Priority:</strong> {priorityLabel[task.priority]}
+                    <strong>اولویت:</strong> {priorityLabel[task.priority]}
                   </span>
                   <span>
-                    <strong>Status:</strong> {statusLabel[task.status]}
+                    <strong>وضعیت:</strong> {statusLabel[task.status]}
                   </span>
                   <span>
-                    <strong>Due:</strong> {formatDateTime(task.dueDate)}
+                    <strong>مهلت:</strong> {formatDateTime(task.dueDate)}
                   </span>
                 </div>
               </div>
@@ -255,7 +254,7 @@ export default function TaskPage() {
                     checked={task.status === 1}
                     onChange={() => toggleTaskStatus(task.id)}
                   />
-                  <span>Completed</span>
+                  <span>تکمیل‌شده</span>
                 </label>
 
                 <button
@@ -265,7 +264,7 @@ export default function TaskPage() {
                   data-task-id={task.id}
                   onClick={() => openEditModal(task)}
                 >
-                  Edit
+                  ویرایش
                 </button>
 
                 <button
@@ -275,7 +274,7 @@ export default function TaskPage() {
                   data-task-id={task.id}
                   onClick={() => deleteTask(task.id)}
                 >
-                  Delete
+                  حذف
                 </button>
               </div>
             </article>
@@ -287,12 +286,12 @@ export default function TaskPage() {
         <div id="task-modal" className="modal" onClick={closeModal}>
           <div className="modal__content" onClick={(e) => e.stopPropagation()}>
             <div className="modal__header">
-              <h2>{editingTaskId ? "Edit Task" : "Add Task"}</h2>
+              <h2>{editingTaskId ? "ویرایش وظیفه" : "افزودن وظیفه"}</h2>
               <button
                 type="button"
                 className="modal__close"
                 onClick={closeModal}
-                aria-label="Close modal"
+                aria-label="بستن پنجره"
               >
                 ×
               </button>
@@ -300,7 +299,7 @@ export default function TaskPage() {
 
             <form id="task-form" className="task-form" onSubmit={handleSubmit}>
               <label className="form-field">
-                <span>Course</span>
+                <span>درس</span>
                 <select
                   id="task-course-id"
                   name="courseId"
@@ -317,7 +316,7 @@ export default function TaskPage() {
               </label>
 
               <label className="form-field">
-                <span>Title</span>
+                <span>عنوان</span>
                 <input
                   id="task-title"
                   type="text"
@@ -330,7 +329,7 @@ export default function TaskPage() {
               </label>
 
               <label className="form-field">
-                <span>Description</span>
+                <span>توضیحات</span>
                 <textarea
                   id="task-description"
                   name="description"
@@ -342,7 +341,7 @@ export default function TaskPage() {
               </label>
 
               <label className="form-field">
-                <span>Type</span>
+                <span>نوع</span>
                 <select
                   id="task-type"
                   name="type"
@@ -350,13 +349,13 @@ export default function TaskPage() {
                   onChange={handleChange}
                   required
                 >
-                  <option value="0">Assignment</option>
-                  <option value="1">Exam</option>
+                  <option value="0">تکلیف</option>
+                  <option value="1">امتحان</option>
                 </select>
               </label>
 
               <label className="form-field">
-                <span>Priority</span>
+                <span>اولویت</span>
                 <select
                   id="task-priority"
                   name="priority"
@@ -364,14 +363,14 @@ export default function TaskPage() {
                   onChange={handleChange}
                   required
                 >
-                  <option value="0">Low</option>
-                  <option value="1">Medium</option>
-                  <option value="2">High</option>
+                  <option value="0">کم</option>
+                  <option value="1">متوسط</option>
+                  <option value="2">زیاد</option>
                 </select>
               </label>
 
               <label className="form-field">
-                <span>Due Date</span>
+                <span>تاریخ سررسید</span>
                 <input
                   id="task-due-date"
                   type="datetime-local"
@@ -384,10 +383,10 @@ export default function TaskPage() {
 
               <div className="task-form__actions">
                 <button type="button" className="btn btn--ghost" onClick={closeModal}>
-                  Cancel
+                  انصراف
                 </button>
                 <button type="submit" className="btn btn--primary">
-                  {editingTaskId ? "Save Changes" : "Create Task"}
+                  {editingTaskId ? "ذخیره تغییرات" : "ایجاد وظیفه"}
                 </button>
               </div>
             </form>
