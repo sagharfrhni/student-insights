@@ -6,6 +6,7 @@ import CoursesPage from './pages/CoursesPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import TaskPage from './pages/TaskPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
+import CalendarPage from './pages/CalendarPage.jsx';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Link to="/courses">Courses</Link>
           <Link to="/tasks">Tasks</Link>
           <Link to="/admin">Admin</Link>
+          <Link to="/calendar">Calendar</Link>
         </nav>
 
         {/* بخش اصلی مدیریت مسیرها */}
@@ -29,6 +31,8 @@ function App() {
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/tasks" element={<TaskPage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+
           {/* مسیر پیش‌فرض: اگر هیچ‌کدام نبود برو به لاگین */}
           <Route path="/" element={<LoginPage />} />
         </Routes>
