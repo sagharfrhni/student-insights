@@ -1,111 +1,156 @@
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  --bg-main: #FAF9F5;
+  --bg-card: #FFFFFF;
+  --bg-peach: #F4DACB;
+  --color-teal: #7B9D9F;
+  --color-amber: #FDC685;
+  --color-rose: #E79997;
+  --color-dark: #2D3E40;
+  --border-card: rgba(244, 218, 203, 0.8);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+html.dark {
+  --bg-main: #060407;        
+  --bg-card: #221A32;        
+  --bg-peach: #541532;       
+  --color-amber: #722549;    
+  --color-rose: #541532;     
+  --color-teal: #826F9D;     
+  --color-dark: #F4F0FA;     
+  --border-card: rgba(84, 21, 50, 0.8);
 }
 
 body {
   margin: 0;
+  font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif;
+  direction: rtl;
+  text-align: right;
+  background-color: var(--bg-main);
+  color: var(--color-dark);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+
+.bg-white {
+  background-color: var(--bg-card) !important;
+  color: var(--color-dark) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+.border-brand-peach\/80,
+.border-brand-peach\/60,
+.border-brand-peach {
+  border-color: var(--border-card) !important;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+
+select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237B9D9F'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: left 0.85rem center !important;
+  background-size: 1.1rem !important;
+  padding-left: 2.5rem !important;
+  padding-right: 1rem !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+html.dark select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23826F9D'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E") !important;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+
+option {
+  background-color: var(--bg-card) !important;
+  color: var(--color-dark) !important;
+  padding: 0.75rem 1rem !important;
+  font-family: 'Vazirmatn', sans-serif !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+}
+
+option:hover,
+option:focus,
+option:active,
+option:checked {
+  background-color: var(--color-amber) !important;
+  color: #FFFFFF !important;
+}
+
+html.dark option:checked {
+  background-color: #722549 !important;
+  color: #F4F0FA !important;
+}
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--color-dark) !important;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: inset 0 0 20px 20px var(--bg-card) !important;
+}
+
+
+html.dark .bg-amber-100,
+html.dark .bg-amber-50,
+html.dark .bg-amber-200,
+html.dark .bg-yellow-100,
+html.dark .bg-brand-amber\/20,
+html.dark .bg-brand-amber\/30 {
+  background-color: rgba(114, 37, 73, 0.4) !important;
+  color: #F4F0FA !important;
+}
+
+html.dark .text-amber-800,
+html.dark .text-amber-600,
+html.dark .text-amber-500,
+html.dark .text-amber-700,
+html.dark .text-yellow-600,
+html.dark .text-brand-amber {
+  color: #826F9D !important;
+}
+
+html.dark .border-amber-400,
+html.dark .border-amber-300,
+html.dark .border-brand-amber {
+  border-color: #722549 !important;
+}
+
+
+html.dark .bg-emerald-100,
+html.dark .bg-emerald-50,
+html.dark .bg-emerald-200,
+html.dark .bg-green-100 {
+  background-color: rgba(130, 111, 157, 0.25) !important;
+  color: #F4F0FA !important;
+}
+
+html.dark .text-emerald-800,
+html.dark .text-emerald-700,
+html.dark .text-emerald-600,
+html.dark .text-emerald-500,
+html.dark .text-green-600 {
+  color: #826F9D !important;
+}
+
+html.dark .border-emerald-400,
+html.dark .border-emerald-300 {
+  border-color: #826F9D !important;
+}
+
+.fa-num {
+  font-feature-settings: "ss01";
 }
