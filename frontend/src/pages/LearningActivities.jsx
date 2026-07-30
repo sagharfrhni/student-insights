@@ -5,14 +5,14 @@ import { translateError } from '../utils/errorHandler';
 import JalaliDateTimePicker from '../components/JalaliDateTimePicker';
 import ConfirmModal from '../components/ConfirmModal';
 import CustomSelect from '../components/CustomSelect';
-import { Plus, Trash2, Edit2, Clock, CheckCircle2, Circle, RotateCcw } from 'lucide-react';
+import { Plus, Trash2, Edit2, Clock, CheckCircle2, Circle, RotateCcw, ExternalLink } from 'lucide-react';
 
 const initialMockActivities = [
-  { id: '1', courseId: 'c1', courseName: 'پایگاه داده‌ها', title: 'تمرین شماره ۳ - نرمال‌سازی', type: 'Assignment', dueDateUtc: new Date(Date.now() + 86400000 * 2).toISOString(), priority: 'High', status: 'InProgress', description: 'حل سؤالات ۱ تا ۵ فصل چهارم کتاب اصلی' },
-  { id: '2', courseId: 'c2', courseName: 'هوش مصنوعی', title: 'پروژه فاز اول - پیاده‌سازی A*', type: 'Project', dueDateUtc: new Date(Date.now() + 86400000 * 7).toISOString(), priority: 'Medium', status: 'NotStarted', description: 'کدنویسی به زبان پایتون همراه با گزارش مستندات' },
-  { id: '3', courseId: 'c3', courseName: 'طراحی الگوریتم', title: 'تمرین الگوریتم‌های حریصانه', type: 'Assignment', dueDateUtc: new Date(Date.now() - 86400000).toISOString(), priority: 'High', status: 'NotStarted', description: 'تمرین فصل سوم' },
-  { id: '4', courseId: 'c1', courseName: 'پایگاه داده‌ها', title: 'پروژه طراحی بانک اطلاعاتی فروشگاه', type: 'Project', dueDateUtc: new Date(Date.now() + 86400000 * 12).toISOString(), priority: 'Low', status: 'NotStarted', description: 'پیاده‌سازی نمودار ERD و جدول‌ها' },
-  { id: '5', courseId: 'c2', courseName: 'هوش مصنوعی', title: 'تمرین منطق فازی', type: 'Assignment', dueDateUtc: new Date(Date.now() + 86400000 * 4).toISOString(), priority: 'Medium', status: 'Completed', description: 'حل تمرینات بخش دوم' },
+  { id: '1', courseId: 'c1', courseName: 'پایگاه داده‌ها', title: 'تمرین شماره ۳ - نرمال‌سازی', type: 'Assignment', dueDateUtc: new Date(Date.now() + 86400000 * 2).toISOString(), priority: 'High', status: 'InProgress', description: 'حل سؤالات ۱ تا ۵ فصل چهارم کتاب اصلی', resourceLink: 'https://ocw.mit.edu' },
+  { id: '2', courseId: 'c2', courseName: 'هوش مصنوعی', title: 'پروژه فاز اول - پیاده‌سازی A*', type: 'Project', dueDateUtc: new Date(Date.now() + 86400000 * 7).toISOString(), priority: 'Medium', status: 'NotStarted', description: 'کدنویسی به زبان پایتون همراه با گزارش مستندات', resourceLink: 'https://github.com' },
+  { id: '3', courseId: 'c3', courseName: 'طراحی الگوریتم', title: 'تمرین الگوریتم‌های حریصانه', type: 'Assignment', dueDateUtc: new Date(Date.now() - 86400000).toISOString(), priority: 'High', status: 'NotStarted', description: 'تمرین فصل سوم', resourceLink: '' },
+  { id: '4', courseId: 'c1', courseName: 'پایگاه داده‌ها', title: 'پروژه طراحی بانک اطلاعاتی فروشگاه', type: 'Project', dueDateUtc: new Date(Date.now() + 86400000 * 12).toISOString(), priority: 'Low', status: 'NotStarted', description: 'پیاده‌سازی نمودار ERD و جدول‌ها', resourceLink: '' },
+  { id: '5', courseId: 'c2', courseName: 'هوش مصنوعی', title: 'تمرین منطق فازی', type: 'Assignment', dueDateUtc: new Date(Date.now() + 86400000 * 4).toISOString(), priority: 'Medium', status: 'Completed', description: 'حل تمرینات بخش دوم', resourceLink: '' },
 ];
 
 const priorityOptions = [
@@ -451,6 +451,18 @@ export default function LearningActivities() {
                   {act.description && (
                     <p className="text-xs text-brand-dark/60 dark:text-[#F4F0FA]/60 line-clamp-2 my-2 bg-brand-bg dark:bg-[#060407] p-2.5 rounded-xl border border-brand-peach/30 dark:border-[#541532]">{act.description}</p>
                   )}
+
+                  {act.resourceLink && (
+                    <a
+                      href={act.resourceLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] font-bold text-brand-teal hover:underline mt-1 dir-ltr text-right"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      <span>{act.resourceLink}</span>
+                    </a>
+                  )}
                 </div>
 
                 <div className="pt-4 border-t border-brand-peach/30 dark:border-[#541532] mt-4 flex items-center justify-between">
@@ -559,7 +571,7 @@ export default function LearningActivities() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1 text-brand-dark dark:text-[#F4F0FA]">مهلت تحویل (شمسی)</label>
+                <label className="block text-sm font-medium mb-1 text-brand-dark dark:text-[#F4F0FA]">مهلت تحویل</label>
                 <JalaliDateTimePicker
                   value={formData.dueDateUtc}
                   onChange={(iso) => setFormData({ ...formData, dueDateUtc: iso })}
@@ -576,7 +588,7 @@ export default function LearningActivities() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1 text-brand-dark dark:text-[#F4F0FA]">توضیحات (اختیاری)</label>
+                <label className="block text-sm font-medium mb-1 text-brand-dark dark:text-[#F4F0FA]">توضیحات</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -585,11 +597,22 @@ export default function LearningActivities() {
                 />
               </div>
 
+              <div>
+                <label className="block text-sm font-medium mb-1 text-brand-dark dark:text-[#F4F0FA]">لینک منبع</label>
+                <input
+                  type="url"
+                  placeholder="https://..."
+                  value={formData.resourceLink}
+                  onChange={(e) => setFormData({ ...formData, resourceLink: e.target.value })}
+                  className="w-full border border-brand-peach dark:border-[#541532] bg-white dark:bg-[#060407] text-brand-dark dark:text-[#F4F0FA] rounded-2xl px-4 py-2.5 text-sm dir-ltr text-left"
+                />
+              </div>
+
               <div className="flex gap-2 justify-end pt-4">
                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-sm rounded-xl border border-brand-peach dark:border-[#541532] text-brand-dark dark:text-[#F4F0FA]">
                   انصراف
                 </button>
-                <button type="submit" className="px-5 py-2 text-sm rounded-xl bg-[#826F9D] text-white">
+                <button type="submit" className="px-5 py-2 text-sm rounded-xl bg-[#826F9D] text-white font-bold">
                   ذخیره
                 </button>
               </div>
