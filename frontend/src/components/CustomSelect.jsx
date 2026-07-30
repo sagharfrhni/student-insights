@@ -31,7 +31,7 @@ export default function CustomSelect({ options = [], value, onChange, placeholde
       </button>
 
       {isOpen && (
-        <div className="absolute z-[100] mt-1.5 w-full bg-white dark:bg-[#221A32] border border-brand-peach dark:border-[#521431] rounded-2xl shadow-xl max-h-48 overflow-y-auto p-1.5 space-y-1 animate-fade-in">
+        <div className="absolute z-[100] mt-1.5 w-full bg-white dark:bg-[#221A32] border border-brand-peach dark:border-[#521431] rounded-2xl shadow-xl max-h-56 overflow-y-auto p-1.5 space-y-1 animate-fade-in">
           {options.map((opt) => {
             const isSelected = String(opt.value) === String(value);
             return (

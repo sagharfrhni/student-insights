@@ -252,8 +252,7 @@ export default function TimerPage() {
         <p className="text-sm text-brand-dark/60 dark:text-[#F4F0FA]/60">زمان‌بندی و ثبت هوشمند جلسات مطالعه در زمان واقعی</p>
       </div>
 
-      <div className="bg-white dark:bg-[#221A32] p-6 sm:p-8 rounded-3xl border-2 border-brand-peach dark:border-[#541532] shadow-xl space-y-6 text-center relative overflow-hidden">
-        
+      <div className="bg-white dark:bg-[#221A32] p-6 sm:p-8 rounded-3xl border-2 border-brand-peach dark:border-[#541532] shadow-xl space-y-6 text-center relative">
         <div className="relative w-52 h-52 mx-auto flex items-center justify-center">
           <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 200 200">
             <circle
@@ -290,7 +289,7 @@ export default function TimerPage() {
         </div>
 
         {status === STATUS.IDLE && (
-          <div className="max-w-xs mx-auto text-right space-y-1.5">
+          <div className="max-w-xs mx-auto text-right space-y-1.5 relative z-20">
             <label className="block text-xs font-bold text-brand-dark dark:text-[#F4F0FA]">انتخاب درس برای مطالعه:</label>
             <CustomSelect
               options={courseOptions}
