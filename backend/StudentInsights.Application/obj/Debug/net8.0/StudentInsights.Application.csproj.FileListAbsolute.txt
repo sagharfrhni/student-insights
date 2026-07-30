@@ -1,0 +1,16 @@
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\bin\Debug\net8.0\StudentInsights.Application.deps.json
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\bin\Debug\net8.0\StudentInsights.Application.dll
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\bin\Debug\net8.0\StudentInsights.Application.pdb
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\bin\Debug\net8.0\StudentInsights.Domain.dll
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\bin\Debug\net8.0\StudentInsights.Domain.pdb
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\obj\Debug\net8.0\StudentInsights.Application.csproj.AssemblyReference.cache
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\obj\Debug\net8.0\StudentInsights.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\obj\Debug\net8.0\StudentInsights.Application.AssemblyInfoInputs.cache
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\obj\Debug\net8.0\StudentInsights.Application.AssemblyInfo.cs
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\obj\Debug\net8.0\StudentInsights.Application.csproj.CoreCompileInputs.cache
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\obj\Debug\net8.0\StudentInsights.Application.sourcelink.json
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\obj\Debug\net8.0\StudentI.05C0D1A0.Up2Date
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\obj\Debug\net8.0\StudentInsights.Application.dll
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\obj\Debug\net8.0\refint\StudentInsights.Application.dll
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\obj\Debug\net8.0\StudentInsights.Application.pdb
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Application\obj\Debug\net8.0\ref\StudentInsights.Application.dll

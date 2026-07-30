@@ -1,0 +1,12 @@
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Domain\bin\Debug\net8.0\StudentInsights.Domain.deps.json
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Domain\bin\Debug\net8.0\StudentInsights.Domain.dll
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Domain\bin\Debug\net8.0\StudentInsights.Domain.pdb
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Domain\obj\Debug\net8.0\StudentInsights.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Domain\obj\Debug\net8.0\StudentInsights.Domain.AssemblyInfoInputs.cache
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Domain\obj\Debug\net8.0\StudentInsights.Domain.AssemblyInfo.cs
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Domain\obj\Debug\net8.0\StudentInsights.Domain.csproj.CoreCompileInputs.cache
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Domain\obj\Debug\net8.0\StudentInsights.Domain.sourcelink.json
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Domain\obj\Debug\net8.0\StudentInsights.Domain.dll
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Domain\obj\Debug\net8.0\refint\StudentInsights.Domain.dll
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Domain\obj\Debug\net8.0\StudentInsights.Domain.pdb
+C:\Users\SanazDarbandi\source\repos\StudentInsights\backend\StudentInsights\StudentInsights.Domain\obj\Debug\net8.0\ref\StudentInsights.Domain.dll

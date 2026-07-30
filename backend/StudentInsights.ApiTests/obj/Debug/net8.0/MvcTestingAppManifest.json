@@ -1,0 +1,6 @@
+{
+  "StudentInsights.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\SanazDarbandi\\source\\repos\\StudentInsights\\backend\\StudentInsights\\StudentInsights.Application",
+  "StudentInsights.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\SanazDarbandi\\source\\repos\\StudentInsights\\backend\\StudentInsights\\StudentInsights.Domain",
+  "StudentInsights.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\SanazDarbandi\\source\\repos\\StudentInsights\\backend\\StudentInsights\\StudentInsights.Infrastructure",
+  "StudentInsights.WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\SanazDarbandi\\source\\repos\\StudentInsights\\backend\\StudentInsights\\StudentInsights.WebApi"
+}
