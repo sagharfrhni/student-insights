@@ -23,7 +23,6 @@ const mockDashboardData = {
   ]
 };
 
-
 const aiTools = [
   { name: 'ChatGPT', url: 'https://chatgpt.com', domain: 'chatgpt.com' },
   { name: 'Claude', url: 'https://claude.ai', domain: 'claude.ai' },
@@ -68,14 +67,8 @@ export default function Dashboard() {
     <div className="space-y-6 w-full max-w-full">
       <div className="flex flex-wrap justify-between items-center gap-2">
         <h1 className="text-xl sm:text-2xl font-bold">خلاصه وضعیت ترم جاری</h1>
-        {localStorage.getItem('accessToken') === 'demo-token' && (
-          <span className="bg-brand-amber/30 text-brand-dark text-xs px-3 py-1 rounded-full font-bold">
-            حالت دمو (آزمایشی)
-          </span>
-        )}
       </div>
 
-      
       <div className="bg-white p-4 sm:p-5 rounded-3xl border border-brand-peach/80 shadow-xs space-y-3">
         <div className="flex items-center justify-between border-b border-brand-peach/40 pb-2.5">
           <div className="flex items-center gap-2">
@@ -90,7 +83,6 @@ export default function Dashboard() {
           <ExternalLink className="w-4 h-4 text-brand-dark/40" />
         </div>
 
-        
         <div className="grid grid-cols-4 sm:grid-cols-7 gap-2.5 sm:gap-3 pt-1">
           {aiTools.map((tool) => (
             <a
@@ -121,7 +113,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <StatCard title="تعداد دروس" value={toPersianDigits(data.totalCourses)} icon={BookOpen} color="bg-brand-teal" />
         <StatCard title="تکالیف فعال" value={toPersianDigits(data.activeAssignmentsCount)} icon={CheckSquare} color="bg-brand-amber" />
@@ -129,9 +120,7 @@ export default function Dashboard() {
         <StatCard title="مطالعه این هفته" value={formatMinutesToHours(data.weeklyStudyMinutes)} icon={Clock} color="bg-brand-peach" />
       </div>
 
-      
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
-        
         <div className="bg-white p-4 sm:p-6 rounded-3xl border border-brand-peach/80 shadow-xs space-y-4">
           <div className="flex justify-between items-center border-b border-brand-peach/40 pb-3">
             <h2 className="font-bold text-sm sm:text-base flex items-center gap-2">
@@ -161,7 +150,6 @@ export default function Dashboard() {
           )}
         </div>
 
-        
         <div className="bg-white p-4 sm:p-6 rounded-3xl border border-brand-peach/80 shadow-xs space-y-4">
           <div className="flex justify-between items-center border-b border-brand-peach/40 pb-3">
             <h2 className="font-bold text-sm sm:text-base flex items-center gap-2">
@@ -191,7 +179,6 @@ export default function Dashboard() {
           )}
         </div>
 
-        
         <div className="bg-white p-4 sm:p-6 rounded-3xl border border-brand-peach/80 shadow-xs space-y-4 lg:col-span-2 xl:col-span-1">
           <div className="border-b border-brand-peach/40 pb-3">
             <h2 className="font-bold text-sm sm:text-base flex items-center gap-2">

@@ -24,20 +24,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const initUserFromToken = (token) => {
-    if (token === 'demo-token') {
-      setUser({
-        isAuthenticated: true,
-        userId: '00000000-0000-0000-0000-000000000001',
-        email: 'student@demo.local',
-        firstName: 'علی',
-        lastName: 'محمدی',
-        role: 'Student',
-        isAdmin: false,
-        isDemo: true,
-      });
-      return;
-    }
-
     const decoded = parseJwt(token);
     if (decoded) {
       const role = decoded.role || decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
@@ -74,25 +60,10 @@ export const AuthProvider = ({ children }) => {
     return response.data;
   };
 
-  
-  const loginAsDemo = (isAdmin = false) => {
-    localStorage.setItem('accessToken', 'demo-token');
-    setUser({
-      isAuthenticated: true,
-      userId: '00000000-0000-0000-0000-000000000001',
-      email: isAdmin ? 'admin@demo.local' : 'student@demo.local',
-      firstName: isAdmin ? 'مدیر' : 'علی',
-      lastName: isAdmin ? 'سیستم' : 'محمدی',
-      role: isAdmin ? 'Admin' : 'Student',
-      isAdmin: isAdmin,
-      isDemo: true,
-    });
-  };
-
   const logout = async () => {
     try {
       const refreshToken = localStorage.getItem('refreshToken');
-      if (refreshToken && localStorage.getItem('accessToken') !== 'demo-token') {
+      if (refreshToken) {
         await api.post('/auth/logout', { refreshToken });
       }
     } catch (e) {
@@ -105,7 +76,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, loginAsDemo, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
