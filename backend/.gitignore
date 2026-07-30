@@ -1,0 +1,97 @@
+# -----------------------------
+# Build artifacts
+# -----------------------------
+bin/
+obj/
+out/
+artifacts/
+
+# -----------------------------
+# Visual Studio
+# -----------------------------
+.vs/
+*.user
+*.rsuser
+*.suo
+*.userprefs
+*.sln.docstates
+
+# -----------------------------
+# Logs
+# -----------------------------
+*.log
+logs/
+Log/
+Logs/
+
+# -----------------------------
+# Test & Coverage
+# -----------------------------
+TestResults/
+BenchmarkDotNet.Artifacts/
+coverage*.json
+coverage*.xml
+coverage*.info
+*.coverage
+*.coveragexml
+
+# -----------------------------
+# NuGet
+# -----------------------------
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+
+# -----------------------------
+# User Secrets
+# -----------------------------
+secrets.json
+
+# -----------------------------
+# ASP.NET Core
+# -----------------------------
+ScaffoldingReadMe.txt
+
+# -----------------------------
+# Publish
+# -----------------------------
+publish/
+*.pubxml
+*.publishproj
+*.azurePubxml
+PublishScripts/
+
+# -----------------------------
+# SQL Server Local Files
+# -----------------------------
+*.mdf
+*.ldf
+*.ndf
+
+# -----------------------------
+# Node (Frontend)
+# -----------------------------
+node_modules/
+
+# -----------------------------
+# Python
+# -----------------------------
+__pycache__/
+*.pyc
+
+# -----------------------------
+# OS files
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# Serilog
+# -----------------------------
+logs/
+
+# -----------------------------
+# Local history
+# -----------------------------
+.localhistory/
