@@ -5,12 +5,14 @@ import { translateError } from '../utils/errorHandler';
 import JalaliDateTimePicker from '../components/JalaliDateTimePicker';
 import ConfirmModal from '../components/ConfirmModal';
 import CustomSelect from '../components/CustomSelect';
-import { Plus, Trash2, Edit2, Clock, CheckCircle2, Circle } from 'lucide-react';
+import { Plus, Trash2, Edit2, Clock, CheckCircle2, Circle, RotateCcw } from 'lucide-react';
 
 const initialMockActivities = [
   { id: '1', courseId: 'c1', courseName: 'پایگاه داده‌ها', title: 'تمرین شماره ۳ - نرمال‌سازی', type: 'Assignment', dueDateUtc: new Date(Date.now() + 86400000 * 2).toISOString(), priority: 'High', status: 'InProgress', description: 'حل سؤالات ۱ تا ۵ فصل چهارم کتاب اصلی' },
   { id: '2', courseId: 'c2', courseName: 'هوش مصنوعی', title: 'پروژه فاز اول - پیاده‌سازی A*', type: 'Project', dueDateUtc: new Date(Date.now() + 86400000 * 7).toISOString(), priority: 'Medium', status: 'NotStarted', description: 'کدنویسی به زبان پایتون همراه با گزارش مستندات' },
   { id: '3', courseId: 'c3', courseName: 'طراحی الگوریتم', title: 'تمرین الگوریتم‌های حریصانه', type: 'Assignment', dueDateUtc: new Date(Date.now() - 86400000).toISOString(), priority: 'High', status: 'NotStarted', description: 'تمرین فصل سوم' },
+  { id: '4', courseId: 'c1', courseName: 'پایگاه داده‌ها', title: 'پروژه طراحی بانک اطلاعاتی فروشگاه', type: 'Project', dueDateUtc: new Date(Date.now() + 86400000 * 12).toISOString(), priority: 'Low', status: 'NotStarted', description: 'پیاده‌سازی نمودار ERD و جدول‌ها' },
+  { id: '5', courseId: 'c2', courseName: 'هوش مصنوعی', title: 'تمرین منطق فازی', type: 'Assignment', dueDateUtc: new Date(Date.now() + 86400000 * 4).toISOString(), priority: 'Medium', status: 'Completed', description: 'حل تمرینات بخش دوم' },
 ];
 
 const priorityOptions = [
@@ -62,7 +64,6 @@ function getDeadlineRisk(dueDateUtc, status) {
 
 export default function LearningActivities() {
   const [activities, setActivities] = useState([]);
-  const [masterActivities, setMasterActivities] = useState(initialMockActivities);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -70,6 +71,8 @@ export default function LearningActivities() {
   const [selectedCourse, setSelectedCourse] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [selectedType, setSelectedType] = useState('');
+  const [selectedPriority, setSelectedPriority] = useState('');
+  const [sortBy, setSortBy] = useState('deadline');
 
   const [showModal, setShowModal] = useState(false);
   const [editingActivity, setEditingActivity] = useState(null);
@@ -91,29 +94,14 @@ export default function LearningActivities() {
     try {
       setLoading(true);
       const coursesRes = await api.get('/courses?pageNumber=1&pageSize=100');
-      setCourses(coursesRes.data.items || coursesRes.data || []);
+      const coursesList = coursesRes.data.items || coursesRes.data || [];
+      setCourses(coursesList);
 
-      let url = '/learning-activities?pageNumber=1&pageSize=50';
-      if (selectedCourse) url += `&courseId=${selectedCourse}`;
-      if (selectedStatus !== '') url += `&status=${selectedStatus}`;
-      if (selectedType !== '') url += `&type=${selectedType}`;
-
-      const res = await api.get(url);
-      setActivities(res.data.items || res.data || []);
+      const res = await api.get('/learning-activities?pageNumber=1&pageSize=100');
+      const actList = res.data.items || res.data || [];
+      setActivities(actList.length > 0 ? actList : initialMockActivities);
     } catch (err) {
-      let filtered = [...masterActivities];
-      if (selectedCourse) {
-        filtered = filtered.filter((a) => a.courseId === selectedCourse);
-      }
-      if (selectedStatus !== '') {
-        const statusStr = selectedStatus === '2' ? 'Completed' : selectedStatus === '1' ? 'InProgress' : 'NotStarted';
-        filtered = filtered.filter((a) => a.status === statusStr);
-      }
-      if (selectedType !== '') {
-        const typeStr = selectedType === '1' ? 'Project' : 'Assignment';
-        filtered = filtered.filter((a) => a.type === typeStr);
-      }
-      setActivities(filtered);
+      setActivities(initialMockActivities);
     } finally {
       setLoading(false);
     }
@@ -121,24 +109,81 @@ export default function LearningActivities() {
 
   useEffect(() => {
     fetchData();
-  }, [selectedCourse, selectedStatus, selectedType]);
+  }, []);
+
+  const getFilteredAndSortedActivities = () => {
+    let list = [...activities];
+
+    if (selectedCourse) {
+      list = list.filter((a) => String(a.courseId) === String(selectedCourse));
+    }
+
+    if (selectedStatus !== '') {
+      list = list.filter((a) => {
+        const val = String(a.status);
+        if (selectedStatus === '0') return val === 'NotStarted' || val === '0';
+        if (selectedStatus === '1') return val === 'InProgress' || val === '1';
+        if (selectedStatus === '2') return val === 'Completed' || val === '2';
+        return true;
+      });
+    }
+
+    if (selectedType !== '') {
+      list = list.filter((a) => {
+        const val = String(a.type);
+        if (selectedType === '0') return val === 'Assignment' || val === '0';
+        if (selectedType === '1') return val === 'Project' || val === '1';
+        return true;
+      });
+    }
+
+    if (selectedPriority !== '') {
+      list = list.filter((a) => {
+        const val = String(a.priority);
+        if (selectedPriority === '2') return val === 'High' || val === '2';
+        if (selectedPriority === '1') return val === 'Medium' || val === '1';
+        if (selectedPriority === '0') return val === 'Low' || val === '0';
+        return true;
+      });
+    }
+
+    list.sort((a, b) => {
+      const dateA = new Date(a.dueDateUtc).getTime() || 0;
+      const dateB = new Date(b.dueDateUtc).getTime() || 0;
+
+      if (sortBy === 'deadline') {
+        return dateA - dateB;
+      }
+      if (sortBy === 'newest') {
+        return dateB - dateA;
+      }
+      if (sortBy === 'oldest') {
+        return dateA - dateB;
+      }
+      return 0;
+    });
+
+    return list;
+  };
 
   const handleOpenModal = (act = null) => {
     if (act) {
       setEditingActivity(act);
+      const prioVal = act.priority === 'High' || act.priority === 2 || act.priority === '2' ? 2 : (act.priority === 'Medium' || act.priority === 1 || act.priority === '1' ? 1 : 0);
+      const typeVal = act.type === 'Project' || act.type === 1 || act.type === '1' ? 1 : 0;
       setFormData({
         courseId: act.courseId,
         title: act.title,
-        type: act.type === 'Project' ? 1 : 0,
+        type: typeVal,
         dueDateUtc: act.dueDateUtc,
-        priority: act.priority === 'High' ? 2 : act.priority === 'Medium' ? 1 : 0,
+        priority: prioVal,
         description: act.description || '',
         resourceLink: act.resourceLink || '',
       });
     } else {
       setEditingActivity(null);
       setFormData({
-        courseId: courses[0]?.id || '',
+        courseId: courses[0]?.id || 'c1',
         title: '',
         type: 0,
         dueDateUtc: new Date().toISOString(),
@@ -153,9 +198,6 @@ export default function LearningActivities() {
   const handleStatusChange = async (id, newStatus) => {
     const statusString = newStatus === 2 ? 'Completed' : newStatus === 1 ? 'InProgress' : 'NotStarted';
 
-    setMasterActivities((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, status: statusString } : item))
-    );
     setActivities((prev) =>
       prev.map((item) => (item.id === id ? { ...item, status: statusString } : item))
     );
@@ -164,43 +206,42 @@ export default function LearningActivities() {
       if (localStorage.getItem('accessToken') !== 'demo-token') {
         await api.patch(`/learning-activities/${id}/status`, { newStatus });
       }
-    } catch (err) {
-      fetchData();
-    }
+    } catch (err) {}
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const priorityString = formData.priority === 2 ? 'High' : formData.priority === 1 ? 'Medium' : 'Low';
-    const typeString = formData.type === 1 ? 'Project' : 'Assignment';
-    const courseName = courses.find((c) => c.id === formData.courseId)?.name || 'درس انتخابی';
+    const priorityString = Number(formData.priority) === 2 ? 'High' : (Number(formData.priority) === 1 ? 'Medium' : 'Low');
+    const typeString = Number(formData.type) === 1 ? 'Project' : 'Assignment';
+    const courseName = courses.find((c) => String(c.id) === String(formData.courseId))?.name || 'درس انتخابی';
 
     if (editingActivity) {
       const updated = {
         ...editingActivity,
-        title: formData.title,
-        dueDateUtc: formData.dueDateUtc,
-        priority: priorityString,
-        description: formData.description,
-        resourceLink: formData.resourceLink,
-      };
-      setMasterActivities((prev) => prev.map((item) => (item.id === editingActivity.id ? updated : item)));
-      setActivities((prev) => prev.map((item) => (item.id === editingActivity.id ? updated : item)));
-    } else {
-      const newAct = {
-        id: Date.now().toString(),
         courseId: formData.courseId,
         courseName,
         title: formData.title,
         type: typeString,
         dueDateUtc: formData.dueDateUtc,
         priority: priorityString,
+        description: formData.description,
+        resourceLink: formData.resourceLink,
+      };
+      setActivities((prev) => prev.map((item) => (item.id === editingActivity.id ? updated : item)));
+    } else {
+      const newAct = {
+        id: Date.now().toString(),
+        courseId: formData.courseId,
+        courseName,
+        type: typeString,
+        title: formData.title,
+        dueDateUtc: formData.dueDateUtc,
+        priority: priorityString,
         status: 'NotStarted',
         description: formData.description,
         resourceLink: formData.resourceLink,
       };
-      setMasterActivities((prev) => [newAct, ...prev]);
       setActivities((prev) => [newAct, ...prev]);
     }
 
@@ -212,14 +253,21 @@ export default function LearningActivities() {
           await api.put(`/learning-activities/${editingActivity.id}`, {
             title: formData.title,
             dueDateUtc: formData.dueDateUtc,
-            priority: formData.priority,
+            priority: Number(formData.priority),
             description: formData.description,
             resourceLink: formData.resourceLink,
           });
         } else {
-          await api.post('/learning-activities', formData);
+          await api.post('/learning-activities', {
+            courseId: formData.courseId,
+            title: formData.title,
+            type: Number(formData.type),
+            dueDateUtc: formData.dueDateUtc,
+            priority: Number(formData.priority),
+            description: formData.description,
+            resourceLink: formData.resourceLink,
+          });
         }
-        fetchData();
       }
     } catch (err) {
       alert(translateError(err));
@@ -227,18 +275,26 @@ export default function LearningActivities() {
   };
 
   const confirmDelete = async () => {
-    setMasterActivities((prev) => prev.filter((item) => item.id !== deletingId));
     setActivities((prev) => prev.filter((item) => item.id !== deletingId));
     setDeleteModalOpen(false);
 
     try {
       if (localStorage.getItem('accessToken') !== 'demo-token') {
         await api.delete(`/learning-activities/${deletingId}`);
-        fetchData();
       }
     } catch (err) {
       alert(translateError(err));
     }
+  };
+
+  const hasActiveFilters = selectedCourse !== '' || selectedStatus !== '' || selectedType !== '' || selectedPriority !== '';
+
+  const handleResetFilters = () => {
+    setSelectedCourse('');
+    setSelectedStatus('');
+    setSelectedType('');
+    setSelectedPriority('');
+    setSortBy('deadline');
   };
 
   const courseFilterOptions = [
@@ -259,14 +315,29 @@ export default function LearningActivities() {
     { value: '1', label: 'پروژه' },
   ];
 
+  const priorityFilterOptions = [
+    { value: '', label: 'همه اولویت‌ها' },
+    { value: '2', label: 'اولویت بالا' },
+    { value: '1', label: 'اولویت متوسط' },
+    { value: '0', label: 'اولویت کم' },
+  ];
+
+  const sortOptions = [
+    { value: 'deadline', label: 'مرتب‌سازی: نزدیک‌ترین ددلاین' },
+    { value: 'newest', label: 'مرتب‌سازی: جدیدترین' },
+    { value: 'oldest', label: 'مرتب‌سازی: قدیمی‌ترین' },
+  ];
+
   const courseModalOptions = courses.map((c) => ({ value: c.id, label: c.name }));
+
+  const displayList = getFilteredAndSortedActivities();
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-brand-dark dark:text-[#F4F0FA]">تکالیف و پروژه‌ها</h1>
-          <p className="text-sm text-brand-dark/60 dark:text-[#F4F0FA]/60">مدیریت و پیگیری فعالیت‌های تحصیلی همراه با ریسک ددلاین</p>
+          <p className="text-sm text-brand-dark/60 dark:text-[#F4F0FA]/60">مدیریت و پیگیری فعالیت‌های تحصیلی همراه با فیلتر و مرتب‌سازی پیشرفته</p>
         </div>
 
         <button
@@ -278,43 +349,72 @@ export default function LearningActivities() {
         </button>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="w-full sm:w-48">
+      <div className="space-y-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
           <CustomSelect
             options={courseFilterOptions}
             value={selectedCourse}
             onChange={setSelectedCourse}
           />
-        </div>
 
-        <div className="w-full sm:w-40">
           <CustomSelect
             options={statusFilterOptions}
             value={selectedStatus}
             onChange={setSelectedStatus}
           />
-        </div>
 
-        <div className="w-full sm:w-40">
           <CustomSelect
             options={typeFilterOptions}
             value={selectedType}
             onChange={setSelectedType}
           />
+
+          <CustomSelect
+            options={priorityFilterOptions}
+            value={selectedPriority}
+            onChange={setSelectedPriority}
+          />
+
+          <CustomSelect
+            options={sortOptions}
+            value={sortBy}
+            onChange={setSortBy}
+          />
         </div>
+
+        {hasActiveFilters && (
+          <div className="flex justify-end">
+            <button
+              onClick={handleResetFilters}
+              className="text-xs font-bold text-brand-teal hover:underline inline-flex items-center gap-1.5 px-3 py-1 bg-brand-teal/10 rounded-xl transition-all"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              پاک کردن فیلترها
+            </button>
+          </div>
+        )}
       </div>
 
       {error && <div className="bg-brand-rose/20 text-brand-dark dark:text-rose-200 p-4 rounded-2xl">{error}</div>}
 
       {loading ? (
         <div className="text-center py-12 text-brand-dark/50 dark:text-[#F4F0FA]/50">در حال دریافت فعالیت‌ها...</div>
-      ) : activities.length === 0 ? (
-        <div className="text-center py-12 bg-white dark:bg-[#221A32] rounded-3xl border border-brand-peach/80 dark:border-[#541532] text-brand-dark/50 dark:text-[#F4F0FA]/50">
-          فعالیتی مطابق با فیلترهای انتخابی یافت نشد.
+      ) : displayList.length === 0 ? (
+        <div className="text-center py-12 bg-white dark:bg-[#221A32] rounded-3xl border border-brand-peach/80 dark:border-[#541532] text-brand-dark/50 dark:text-[#F4F0FA]/50 space-y-3">
+          <p>فعالیتی مطابق با فیلترهای انتخابی یافت نشد.</p>
+          {hasActiveFilters && (
+            <button
+              onClick={handleResetFilters}
+              className="text-xs font-bold text-brand-teal hover:underline inline-flex items-center gap-1"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              پاک کردن فیلترها
+            </button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {activities.map((act) => {
+          {displayList.map((act) => {
             const risk = getDeadlineRisk(act.dueDateUtc, act.status);
             return (
               <div key={act.id} className="bg-white dark:bg-[#221A32] p-6 rounded-3xl border border-brand-peach/80 dark:border-[#541532] shadow-xs flex flex-col justify-between">
@@ -322,10 +422,11 @@ export default function LearningActivities() {
                   <div className="flex justify-between items-start mb-2 gap-2">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold ${
-                        act.type === 'Project' ? 'bg-brand-rose/20 text-brand-dark dark:text-rose-200' : 'bg-brand-amber/30 text-brand-dark dark:text-amber-200'
+                        act.type === 'Project' || act.type === 1 ? 'bg-brand-rose/20 text-brand-dark dark:text-rose-200' : 'bg-brand-amber/30 text-brand-dark dark:text-amber-200'
                       }`}>
-                        {act.type === 'Project' ? 'پروژه' : 'تکلیف'}
+                        {act.type === 'Project' || act.type === 1 ? 'پروژه' : 'تکلیف'}
                       </span>
+                      <PriorityBadge priority={act.priority} />
                       <span className="text-xs text-brand-dark/60 dark:text-[#F4F0FA]/60">{act.courseName}</span>
                     </div>
 
@@ -360,7 +461,7 @@ export default function LearningActivities() {
                       type="button"
                       onClick={() => handleStatusChange(act.id, 0)}
                       className={`p-2 rounded-xl transition-all ${
-                        act.status === 'NotStarted'
+                        act.status === 'NotStarted' || act.status === 0
                           ? 'bg-slate-600 text-white shadow-xs scale-105'
                           : 'text-brand-dark/40 dark:text-[#F4F0FA]/40 hover:text-brand-dark hover:bg-slate-200/50'
                       }`}
@@ -373,7 +474,7 @@ export default function LearningActivities() {
                       type="button"
                       onClick={() => handleStatusChange(act.id, 1)}
                       className={`p-2 rounded-xl transition-all ${
-                        act.status === 'InProgress'
+                        act.status === 'InProgress' || act.status === 1
                           ? 'bg-brand-amber text-brand-dark font-bold shadow-xs scale-105'
                           : 'text-brand-dark/40 dark:text-[#F4F0FA]/40 hover:text-brand-dark hover:bg-brand-amber/20'
                       }`}
@@ -386,7 +487,7 @@ export default function LearningActivities() {
                       type="button"
                       onClick={() => handleStatusChange(act.id, 2)}
                       className={`p-2 rounded-xl transition-all ${
-                        act.status === 'Completed'
+                        act.status === 'Completed' || act.status === 2
                           ? 'bg-brand-teal text-white font-bold shadow-xs scale-105'
                           : 'text-brand-dark/40 dark:text-[#F4F0FA]/40 hover:text-brand-dark hover:bg-brand-teal/20'
                       }`}
@@ -508,11 +609,21 @@ export default function LearningActivities() {
   );
 }
 
+const PriorityBadge = ({ priority }) => {
+  if (priority === 'High' || priority === 2 || priority === '2') {
+    return <span className="bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 text-[10px] px-2 py-0.5 rounded-full font-bold">اولویت بالا</span>;
+  }
+  if (priority === 'Medium' || priority === 1 || priority === '1') {
+    return <span className="bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 text-[10px] px-2 py-0.5 rounded-full font-bold">اولویت متوسط</span>;
+  }
+  return <span className="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 text-[10px] px-2 py-0.5 rounded-full font-bold">اولویت کم</span>;
+};
+
 const StatusBadge = ({ status }) => {
-  if (status === 'Completed') {
+  if (status === 'Completed' || status === 2 || status === '2') {
     return <span className="bg-brand-teal text-white border border-brand-teal/30 text-xs px-2.5 py-1 rounded-xl font-bold shadow-xs">تکمیل‌شده</span>;
   }
-  if (status === 'InProgress') {
+  if (status === 'InProgress' || status === 1 || status === '1') {
     return <span className="bg-brand-amber text-brand-dark border border-brand-amber/40 text-xs px-2.5 py-1 rounded-xl font-bold shadow-xs">در حال انجام</span>;
   }
   return <span className="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs px-2.5 py-1 rounded-xl font-bold">شروع‌نشده</span>;

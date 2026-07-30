@@ -10,6 +10,7 @@ import { Plus, Trash2, Edit2, GraduationCap, Award } from 'lucide-react';
 const mockExamsList = [
   { id: '1', courseId: 'c1', courseName: 'پایگاه داده‌ها', title: 'امتحان میانترم پایگاه داده', examDateUtc: new Date(Date.now() + 86400000 * 2).toISOString(), grade: 18.5, description: 'فصل‌های ۱ تا ۴ کتاب مرجع' },
   { id: '2', courseId: 'c2', courseName: 'هوش مصنوعی', title: 'امتحان پایانترم هوش مصنوعی', examDateUtc: new Date(Date.now() + 86400000 * 10).toISOString(), grade: null, description: 'شامل الگوریتم‌های جست‌وجو و منطق فازی' },
+  { id: '3', courseId: 'c3', courseName: 'طراحی الگوریتم', title: 'امتحان میانترم طراحی الگوریتم', examDateUtc: new Date(Date.now() + 86400000 * 5).toISOString(), grade: null, description: 'تمرینات تحلیل پیچیدگی' },
 ];
 
 export default function Exams() {
@@ -20,6 +21,7 @@ export default function Exams() {
   const [error, setError] = useState('');
 
   const [selectedCourseFilter, setSelectedCourseFilter] = useState('');
+  const [sortBy, setSortBy] = useState('nearest');
   const [showModal, setShowModal] = useState(false);
   const [showGradeModal, setShowGradeModal] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
@@ -39,19 +41,15 @@ export default function Exams() {
     try {
       setLoading(true);
       const coursesRes = await api.get('/courses?pageNumber=1&pageSize=100');
-      setCourses(coursesRes.data.items);
+      setCourses(coursesRes.data.items || coursesRes.data || []);
 
       let url = '/exams?pageNumber=1&pageSize=50';
       if (selectedCourseFilter) url += `&courseId=${selectedCourseFilter}`;
-      
+
       const examsRes = await api.get(url);
-      setExams(examsRes.data.items);
+      setExams(examsRes.data.items || examsRes.data || []);
     } catch (err) {
-      let filtered = [...masterExams];
-      if (selectedCourseFilter) {
-        filtered = filtered.filter((e) => e.courseId === selectedCourseFilter);
-      }
-      setExams(filtered);
+      setExams(masterExams);
     } finally {
       setLoading(false);
     }
@@ -60,6 +58,31 @@ export default function Exams() {
   useEffect(() => {
     fetchData();
   }, [selectedCourseFilter]);
+
+  const getFilteredAndSortedExams = () => {
+    let list = [...exams];
+    if (selectedCourseFilter) {
+      list = list.filter((e) => e.courseId === selectedCourseFilter);
+    }
+
+    list.sort((a, b) => {
+      const dateA = new Date(a.examDateUtc).getTime() || 0;
+      const dateB = new Date(b.examDateUtc).getTime() || 0;
+
+      if (sortBy === 'nearest') {
+        return dateA - dateB;
+      }
+      if (sortBy === 'newest') {
+        return dateB - dateA;
+      }
+      if (sortBy === 'oldest') {
+        return dateA - dateB;
+      }
+      return 0;
+    });
+
+    return list;
+  };
 
   const handleOpenModal = (exam = null) => {
     if (exam) {
@@ -177,22 +200,38 @@ export default function Exams() {
     ...courses.map((c) => ({ value: c.id, label: c.name })),
   ];
 
+  const sortOptions = [
+    { value: 'nearest', label: 'مرتب‌سازی: نزدیک‌ترین امتحان' },
+    { value: 'newest', label: 'مرتب‌سازی: جدیدترین' },
+    { value: 'oldest', label: 'مرتب‌سازی: قدیمی‌ترین' },
+  ];
+
   const courseModalOptions = courses.map((c) => ({ value: c.id, label: c.name }));
+
+  const displayExams = getFilteredAndSortedExams();
 
   return (
     <div>
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-bold">مدیریت امتحانات</h1>
-          <p className="text-sm text-brand-dark/60">امتحانات و ارزیابی‌های تحصیلی</p>
+          <p className="text-sm text-brand-dark/60">امتحانات و ارزیابی‌های تحصیلی با قابلیت فیلتر و مرتب‌سازی</p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
           <div className="w-full sm:w-48">
             <CustomSelect
               options={courseFilterOptions}
               value={selectedCourseFilter}
               onChange={setSelectedCourseFilter}
+            />
+          </div>
+
+          <div className="w-full sm:w-52">
+            <CustomSelect
+              options={sortOptions}
+              value={sortBy}
+              onChange={setSortBy}
             />
           </div>
 
@@ -210,13 +249,13 @@ export default function Exams() {
 
       {loading ? (
         <div className="text-center py-12 text-brand-dark/50">در حال دریافت امتحانات...</div>
-      ) : exams.length === 0 ? (
+      ) : displayExams.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-3xl border border-brand-peach/80 text-brand-dark/50">
           امتحانی مطابق با فیلتر انتخابی یافت نشد.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {exams.map((exam) => (
+          {displayExams.map((exam) => (
             <div key={exam.id} className="bg-white p-6 rounded-3xl border border-brand-peach/80 shadow-sm flex flex-col justify-between">
               <div>
                 <div className="flex justify-between items-start mb-2">
@@ -280,7 +319,6 @@ export default function Exams() {
         </div>
       )}
 
-      
       {showModal && (
         <div className="fixed inset-0 bg-brand-dark/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-brand-bg rounded-3xl p-6 w-full max-w-md border border-brand-peach shadow-xl">
@@ -340,7 +378,6 @@ export default function Exams() {
         </div>
       )}
 
-      
       {showGradeModal && (
         <div className="fixed inset-0 bg-brand-dark/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-brand-bg rounded-3xl p-6 w-full max-w-sm border border-brand-peach shadow-xl">
