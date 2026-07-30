@@ -6,16 +6,19 @@ using StudentInsights.Application.Features.Exams.DTOs;
 namespace StudentInsights.Application.Features.Exams.Queries.GetExams;
 
 /// <summary>
-/// CourseId/From/To are all optional so this same query shape can serve
-/// both "all my exams" and the narrower filters the future Calendar/
+/// CourseId/Semester/From/To are all optional so this same query shape can
+/// serve both "all my exams" and the narrower filters the future Calendar/
 /// Dashboard features will need, without requiring a second query later.
 /// A CourseId that doesn't belong to the current user simply yields an
 /// empty page (the base filter below already scopes to Exam.UserId) —
 /// not a 403/404, since a list endpoint filtered by a foreign id is not a
-/// security signal worth surfacing as an error.
+/// security signal worth surfacing as an error. Semester filters via the
+/// referenced Course's own Semester (Exam has no Semester of its own —
+/// it belongs to whichever term its Course does).
 /// </summary>
 public record GetExamsQuery(
     PaginationParams Pagination,
     Guid? CourseId = null,
+    string? Semester = null,
     DateTime? From = null,
     DateTime? To = null) : IRequest<PaginatedResult<ExamDto>>;

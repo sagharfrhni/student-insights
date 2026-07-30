@@ -4,6 +4,7 @@ using StudentInsights.Application.Common.Exceptions;
 using StudentInsights.Application.Common.Interfaces;
 using StudentInsights.Application.Features.LearningActivities.DTOs;
 using StudentInsights.Application.Features.LearningActivities.Mappings;
+using StudentInsights.Domain.Common;
 
 namespace StudentInsights.Application.Features.LearningActivities.Commands.UpdateLearningActivity;
 
@@ -22,18 +23,46 @@ public class UpdateLearningActivityCommandHandler : IRequestHandler<UpdateLearni
 
     public async Task<LearningActivityDto> Handle(UpdateLearningActivityCommand request, CancellationToken cancellationToken)
     {
-        // Course is included (a single-entity join, not a list query) purely
-        // to supply CourseName for the returned DTO — see the reasoning on
-        // LearningActivityMappingExtensions.ToDto.
         var activity = await _context.LearningActivities
             .Include(la => la.Course)
             .FirstOrDefaultAsync(la => la.Id == request.LearningActivityId, cancellationToken);
 
-        // Same 404-for-both-cases reasoning as UpdateCourseCommandHandler.
         if (activity is null || activity.UserId != _currentUserService.UserId)
             throw new NotFoundException($"Learning activity '{request.LearningActivityId}' was not found.");
 
-        activity.UpdateDetails(request.Title, request.Description, request.ResourceLink);
+        var trimmedTitle = request.Title.Trim();
+
+        // Same same-course/same-title/same-minute duplicate rule as
+        // CreateLearningActivityCommandHandler, excluding the activity being
+        // edited itself so re-saving with unchanged values is not rejected
+        // as a duplicate of itself.
+        var dueDateMinute = new DateTime(
+            request.DueDateUtc.Year,
+            request.DueDateUtc.Month,
+            request.DueDateUtc.Day,
+            request.DueDateUtc.Hour,
+            request.DueDateUtc.Minute,
+            0,
+            request.DueDateUtc.Kind);
+
+        var nextMinute = dueDateMinute.AddMinutes(1);
+
+        var isDuplicate = await _context.LearningActivities.AnyAsync(
+            la =>
+                la.Id != activity.Id &&
+                la.CourseId == activity.CourseId &&
+                la.Title == trimmedTitle &&
+                la.DueDateUtc >= dueDateMinute &&
+                la.DueDateUtc < nextMinute,
+            cancellationToken);
+
+        if (isDuplicate)
+        {
+            throw new DomainException(
+                "A learning activity with the same title and due date already exists for this course.");
+        }
+
+        activity.UpdateDetails(trimmedTitle, request.Description, request.ResourceLink);
         activity.Reschedule(request.DueDateUtc);
         activity.SetPriority(request.Priority);
 

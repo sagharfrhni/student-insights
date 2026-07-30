@@ -9,6 +9,7 @@
 public record CourseDto(
     Guid Id,
     string Name,
+    string Semester,
     int Credits,
     string? InstructorName,
     decimal? FinalGrade,

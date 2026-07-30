@@ -23,13 +23,8 @@ public class CreateExamCommandValidator : AbstractValidator<CreateExamCommand>
             .NotEmpty().WithMessage("Title is required.")
             .MaximumLength(200).WithMessage("Title must not exceed 200 characters.");
 
-        // GreaterThanOrEqualTo takes a Func<T, TProperty> here rather than
-        // a fixed DateTime.UtcNow value — the latter would be captured
-        // once when the validator instance is constructed, not
-        // re-evaluated at the moment validation actually runs.
         RuleFor(x => x.ExamDateUtc)
-            .NotEmpty().WithMessage("Exam date is required.")
-            .GreaterThanOrEqualTo(x => DateTime.UtcNow).WithMessage("Exam date cannot be in the past.");
+            .NotEmpty().WithMessage("Exam date is required.");
 
         // No .When(Description is not null) guard needed: FluentValidation's
         // MaximumLength already treats a null value as valid and only checks

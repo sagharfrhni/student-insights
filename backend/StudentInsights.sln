@@ -11,7 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentInsights.WebApi", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentInsights.Infrastructure", "StudentInsights.Infrastructure\StudentInsights.Infrastructure.csproj", "{43E6149D-FE67-4CA3-9A53-AB7EC32E3F2A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentInsights.Application.UnitTests", "StudentInsights.Application.UnitTests\StudentInsights.Application.UnitTests.csproj", "{44EB5FF6-4D36-4D5A-A984-751C69C38D8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudentInsights.UnitTests", "StudentInsights.Application.UnitTests\StudentInsights.UnitTests.csproj", "{44EB5FF6-4D36-4D5A-A984-751C69C38D8B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentInsights.IntegrationTests", "StudentInsights.IntegrationTests\StudentInsights.IntegrationTests.csproj", "{6EF99971-68B5-4D91-8B13-067B5C2BB803}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentInsights.ApiTests", "StudentInsights.ApiTests\StudentInsights.ApiTests.csproj", "{7D8BC692-7DB5-4B18-A65B-DD1317B1D832}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{44EB5FF6-4D36-4D5A-A984-751C69C38D8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44EB5FF6-4D36-4D5A-A984-751C69C38D8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44EB5FF6-4D36-4D5A-A984-751C69C38D8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EF99971-68B5-4D91-8B13-067B5C2BB803}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EF99971-68B5-4D91-8B13-067B5C2BB803}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EF99971-68B5-4D91-8B13-067B5C2BB803}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EF99971-68B5-4D91-8B13-067B5C2BB803}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D8BC692-7DB5-4B18-A65B-DD1317B1D832}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D8BC692-7DB5-4B18-A65B-DD1317B1D832}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D8BC692-7DB5-4B18-A65B-DD1317B1D832}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D8BC692-7DB5-4B18-A65B-DD1317B1D832}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

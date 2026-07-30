@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using StudentInsights.Application.Common.Models;
 using StudentInsights.Application.Features.Exams.Commands.CreateExam;
 using StudentInsights.Application.Features.Exams.Commands.DeleteExam;
+using StudentInsights.Application.Features.Exams.Commands.RecordExamGrade;
 using StudentInsights.Application.Features.Exams.Commands.UpdateExam;
 using StudentInsights.Application.Features.Exams.DTOs;
 using StudentInsights.Application.Features.Exams.Queries.GetExamById;
@@ -64,10 +65,11 @@ public class ExamsController : ControllerBase
 
     /// <summary>
     /// Gets a paged list of the current user's exams, soonest first,
-    /// optionally filtered by course and/or a date range.
+    /// optionally filtered by course, semester, and/or a date range.
     /// </summary>
     /// <param name="pagination">Page number and page size.</param>
     /// <param name="courseId">Optional course id to filter by.</param>
+    /// <param name="semester">Optional semester to filter by (via the exam's course), e.g. "Fall 2026".</param>
     /// <param name="from">Optional inclusive lower bound on exam date (UTC).</param>
     /// <param name="to">Optional inclusive upper bound on exam date (UTC).</param>
     /// <returns>A page of exams.</returns>
@@ -77,11 +79,12 @@ public class ExamsController : ControllerBase
     public async Task<ActionResult<PaginatedResult<ExamDto>>> GetExams(
         [FromQuery] PaginationParams pagination,
         [FromQuery] Guid? courseId,
+        [FromQuery] string? semester,
         [FromQuery] DateTime? from,
         [FromQuery] DateTime? to,
         CancellationToken cancellationToken)
     {
-        var exams = await _mediator.Send(new GetExamsQuery(pagination, courseId, from, to), cancellationToken);
+        var exams = await _mediator.Send(new GetExamsQuery(pagination, courseId, semester, from, to), cancellationToken);
 
         return Ok(exams);
     }
@@ -100,6 +103,25 @@ public class ExamsController : ControllerBase
         CancellationToken cancellationToken)
     {
         var command = new UpdateExamCommand(id, request.Title, request.ExamDateUtc, request.Description);
+        var exam = await _mediator.Send(command, cancellationToken);
+
+        return Ok(exam);
+    }
+
+    /// <summary>Records (or overwrites) the grade of an exam owned by the current user.</summary>
+    /// <param name="id">The exam id.</param>
+    /// <param name="request">The exam's grade (0-20).</param>
+    /// <returns>The updated exam.</returns>
+    /// <response code="200">The grade was recorded.</response>
+    /// <response code="400">The request failed validation.</response>
+    /// <response code="404">The exam does not exist or is not owned by the current user.</response>
+    [HttpPatch("{id:guid}/grade")]
+    public async Task<ActionResult<ExamDto>> RecordExamGrade(
+        Guid id,
+        [FromBody] RecordExamGradeRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new RecordExamGradeCommand(id, request.Grade);
         var exam = await _mediator.Send(command, cancellationToken);
 
         return Ok(exam);

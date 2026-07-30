@@ -39,6 +39,19 @@ public class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand>
             .Where(sl => sl.CourseId == course.Id)
             .ToListAsync(cancellationToken);
 
+        // Same reasoning as DeleteLearningActivityCommandHandler: a
+        // ProjectDeadline goal tracking one of this course's activities
+        // must not be left pointing at a now-invisible (soft-deleted)
+        // activity forever.
+        var activityIds = learningActivities.Select(la => la.Id).ToList();
+
+        var relatedGoals = await _context.Goals
+            .Where(g => g.RelatedActivityId != null && activityIds.Contains(g.RelatedActivityId.Value))
+            .ToListAsync(cancellationToken);
+
+        foreach (var relatedGoal in relatedGoals)
+            relatedGoal.Delete();
+
         foreach (var learningActivity in learningActivities)
             learningActivity.Delete();
 

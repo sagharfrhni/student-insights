@@ -1,12 +1,13 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using StudentInsights.Application.Features.Auth.Commands.ConfirmEmail;
 using StudentInsights.Application.Features.Auth.Commands.ForgotPassword;
 using StudentInsights.Application.Features.Auth.Commands.Login;
 using StudentInsights.Application.Features.Auth.Commands.Logout;
 using StudentInsights.Application.Features.Auth.Commands.Register;
 using StudentInsights.Application.Features.Auth.Commands.ResetPassword;
+using StudentInsights.WebApi.Extensions;
 using RefreshTokenCommand = StudentInsights.Application.Features.Auth.Commands.RefreshToken.RefreshTokenCommand;
 
 namespace StudentInsights.WebApi.Controllers;
@@ -23,6 +24,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [EnableRateLimiting(RateLimitPolicies.Auth)]
     public async Task<ActionResult<RegisterResult>> Register(RegisterCommand command, CancellationToken cancellationToken)
     {
         var result = await _sender.Send(command, cancellationToken);
@@ -30,9 +32,10 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [EnableRateLimiting(RateLimitPolicies.Auth)]
     public async Task<ActionResult> Login(LoginRequest request, CancellationToken cancellationToken)
     {
-        var command = new LoginCommand(request.Email, request.Password, request.RememberMe, GetIpAddress());
+        var command = new LoginCommand(request.Email, request.Password, request.RememberMe, HttpContext.GetClientIpAddress());
         var result = await _sender.Send(command, cancellationToken);
         return Ok(result);
     }
@@ -40,7 +43,7 @@ public class AuthController : ControllerBase
     [HttpPost("refresh-token")]
     public async Task<ActionResult> RefreshToken(RefreshTokenRequest request, CancellationToken cancellationToken)
     {
-        var command = new RefreshTokenCommand(request.RefreshToken, GetIpAddress());
+        var command = new RefreshTokenCommand(request.RefreshToken, HttpContext.GetClientIpAddress());
         var result = await _sender.Send(command, cancellationToken);
         return Ok(result);
     }
@@ -48,7 +51,7 @@ public class AuthController : ControllerBase
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(LogoutRequest request, CancellationToken cancellationToken)
     {
-        var command = new LogoutCommand(request.RefreshToken, GetIpAddress());
+        var command = new LogoutCommand(request.RefreshToken, HttpContext.GetClientIpAddress());
         await _sender.Send(command, cancellationToken);
         return NoContent();
     }
@@ -72,22 +75,6 @@ public class AuthController : ControllerBase
     {
         await _sender.Send(command, cancellationToken);
         return NoContent();
-    }
-
-    private string? GetIpAddress()
-    {
-        // Behind a reverse proxy / load balancer (the normal production
-        // topology), Connection.RemoteIpAddress is the proxy's address, not
-        // the client's. Prefer X-Forwarded-For when present. Note: if
-        // Program.cs already configures UseForwardedHeaders(), RemoteIpAddress
-        // is already correct and this is a harmless no-op fallback.
-        if (Request.Headers.TryGetValue("X-Forwarded-For", out var forwardedFor) &&
-            !string.IsNullOrWhiteSpace(forwardedFor))
-        {
-            return forwardedFor.ToString().Split(',')[0].Trim();
-        }
-
-        return HttpContext.Connection.RemoteIpAddress?.ToString();
     }
 }
 

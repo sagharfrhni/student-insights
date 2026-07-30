@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using StudentInsights.Application.Common.Interfaces;
 using StudentInsights.Application.Common.Security;
 using StudentInsights.Domain.Common;
@@ -14,15 +15,18 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterR
     private readonly IApplicationDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IEmailSender _emailSender;
+    private readonly ILogger<RegisterCommandHandler> _logger;
 
     public RegisterCommandHandler(
         IApplicationDbContext context,
         IPasswordHasher passwordHasher,
-        IEmailSender emailSender)
+        IEmailSender emailSender,
+        ILogger<RegisterCommandHandler> logger)
     {
         _context = context;
         _passwordHasher = passwordHasher;
         _emailSender = emailSender;
+        _logger = logger;
     }
 
     public async Task<RegisterResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -66,7 +70,19 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterR
             throw;
         }
 
-        await _emailSender.SendEmailConfirmationAsync(user.Email, user.FirstName, user.Id, rawToken, cancellationToken);
+        try
+        {
+            await _emailSender.SendEmailConfirmationAsync(user.Email, user.FirstName, user.Id, rawToken, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            // The user row above is already committed -- registration itself
+            // succeeded. A mail-provider outage/timeout must not be reported
+            // to the caller as a failed signup; log it and let the user
+            // proceed (login doesn't require a confirmed email -- see
+            // User.CanLogIn()).
+            _logger.LogError(ex, "Failed to send confirmation email to user '{UserId}'.", user.Id);
+        }
 
         return new RegisterResult(user.Id, user.Email);
     }

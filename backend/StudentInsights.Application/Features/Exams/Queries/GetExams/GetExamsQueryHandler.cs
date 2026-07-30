@@ -40,6 +40,9 @@ public class GetExamsQueryHandler : IRequestHandler<GetExamsQuery, PaginatedResu
         if (request.CourseId.HasValue)
             query = query.Where(e => e.CourseId == request.CourseId.Value);
 
+        if (!string.IsNullOrWhiteSpace(request.Semester))
+            query = query.Where(e => e.Course.Semester == request.Semester);
+
         if (request.From.HasValue)
             query = query.Where(e => e.ExamDateUtc >= request.From.Value);
 

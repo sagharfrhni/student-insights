@@ -25,8 +25,12 @@ public class GetCoursesQueryHandler : IRequestHandler<GetCoursesQuery, Paginated
     {
         var query = _context.Courses
             .AsNoTracking()
-            .Where(c => c.UserId == _currentUserService.UserId)
-            .OrderByDescending(c => c.CreatedAtUtc);
+            .Where(c => c.UserId == _currentUserService.UserId);
+
+        if (!string.IsNullOrWhiteSpace(request.Semester))
+            query = query.Where(c => c.Semester == request.Semester);
+
+        query = query.OrderByDescending(c => c.CreatedAtUtc);
 
         var pagedCourses = await PaginatedResult<Course>.CreateAsync(
             query,

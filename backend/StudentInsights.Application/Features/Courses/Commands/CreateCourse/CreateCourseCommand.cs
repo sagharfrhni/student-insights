@@ -9,5 +9,6 @@ namespace StudentInsights.Application.Features.Courses.Commands.CreateCourse;
 /// </summary>
 public record CreateCourseCommand(
     string Name,
+    string Semester,
     int Credits,
     string? InstructorName) : IRequest<CourseDto>;

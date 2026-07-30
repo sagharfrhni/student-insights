@@ -74,6 +74,7 @@ public class LearningActivitiesController : ControllerBase
 
     /// <summary>Gets a paged, optionally filtered list of the current user's learning activities, ordered by due date.</summary>
     /// <param name="courseId">Optional course filter.</param>
+    /// <param name="semester">Optional semester filter (via the activity's course), e.g. "Fall 2026".</param>
     /// <param name="status">Optional status filter.</param>
     /// <param name="type">Optional activity type filter.</param>
     /// <param name="pagination">Page number and page size.</param>
@@ -82,12 +83,13 @@ public class LearningActivitiesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<PaginatedResult<LearningActivityDto>>> GetLearningActivities(
         [FromQuery] Guid? courseId,
+        [FromQuery] string? semester,
         [FromQuery] ActivityStatus? status,
         [FromQuery] ActivityType? type,
         [FromQuery] PaginationParams pagination,
         CancellationToken cancellationToken)
     {
-        var query = new GetLearningActivitiesQuery(courseId, status, type, pagination);
+        var query = new GetLearningActivitiesQuery(courseId, semester, status, type, pagination);
         var activities = await _mediator.Send(query, cancellationToken);
 
         return Ok(activities);

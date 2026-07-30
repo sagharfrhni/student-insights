@@ -178,6 +178,41 @@ public class User : BaseEntity
         MarkModified();
     }
 
+    /// <summary>
+    /// Changes the user's email as part of a self-service profile update.
+    /// Uniqueness against other users is enforced by the caller (backstopped
+    /// by the unique filtered index on Email) — this method only enforces
+    /// the same shape rule Create() does. A no-op if the normalized email is
+    /// unchanged, so callers can invoke this unconditionally without
+    /// accidentally clearing a still-valid confirmation.
+    /// </summary>
+    public void ChangeEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email) || !EmailPattern.IsMatch(email.Trim()))
+            throw new DomainException("A valid email is required.");
+
+        var normalizedEmail = email.Trim().ToLowerInvariant();
+
+        if (normalizedEmail == Email)
+            return;
+
+        Email = normalizedEmail;
+
+        // The new address hasn't been verified, so any existing confirmation
+        // no longer applies -- same "clear stale state rather than leave it
+        // dangling" reasoning as ResetPassword clearing the reset token.
+        // Note: CanLogIn() does not depend on EmailConfirmed, so this does
+        // not lock the user out; re-sending a confirmation email for the
+        // new address is a separate concern left to the email/localization
+        // work, not this method.
+        EmailConfirmed = false;
+        EmailConfirmedAtUtc = null;
+        EmailConfirmationTokenHash = null;
+        EmailConfirmationTokenExpiresAtUtc = null;
+
+        MarkModified();
+    }
+
     public void Activate()
     {
         IsActive = true;
@@ -193,6 +228,12 @@ public class User : BaseEntity
     public void PromoteToAdmin()
     {
         Role = UserRole.Admin;
+        MarkModified();
+    }
+
+    public void DemoteToStudent()
+    {
+        Role = UserRole.Student;
         MarkModified();
     }
 

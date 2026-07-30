@@ -22,6 +22,7 @@ public static class CourseMappingExtensions
         return new CourseDto(
             course.Id,
             course.Name,
+            course.Semester,
             course.Credits,
             course.InstructorName,
             course.FinalGrade,

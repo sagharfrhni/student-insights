@@ -9,22 +9,26 @@ public class Goal : BaseEntity
     {
     } // EF Core
 
-    private Goal(Guid userId, GoalType type, decimal targetValue, DateTime? targetDateUtc, Guid? relatedActivityId)
+    private Goal(Guid userId, GoalType type, decimal targetValue, decimal currentValue,
+        DateTime? targetDateUtc, Guid? relatedActivityId)
     {
         UserId = userId;
         Type = type;
         TargetValue = targetValue;
+        CurrentValue = currentValue;
         TargetDateUtc = targetDateUtc;
         RelatedActivityId = relatedActivityId;
     }
 
     public static Goal Create(User user, GoalType type, decimal targetValue, DateTime? targetDateUtc = null,
-        LearningActivity? relatedActivity = null)
+        LearningActivity? relatedActivity = null, decimal currentValue = 0m)
     {
         if (user is null)
             throw new DomainException("User is required.");
         if (targetValue <= 0)
             throw new DomainException("Target value must be greater than zero.");
+        if (currentValue < 0)
+            throw new DomainException("Current value cannot be negative.");
 
         if (type == GoalType.ProjectDeadline)
         {
@@ -38,7 +42,7 @@ public class Goal : BaseEntity
             throw new DomainException("Only ProjectDeadline goals can reference a learning activity.");
         }
 
-        return new Goal(user.Id, type, targetValue, targetDateUtc, relatedActivity?.Id);
+        return new Goal(user.Id, type, targetValue, currentValue, targetDateUtc, relatedActivity?.Id);
     }
 
     public Guid UserId { get; private set; }
@@ -49,6 +53,17 @@ public class Goal : BaseEntity
 
     /// <summary>Target value: GPA, hours, chapters, etc. depending on Type.</summary>
     public decimal TargetValue { get; private set; }
+
+    /// <summary>
+    /// Generic current-progress value, on the same scale as TargetValue.
+    /// Populated live (never persisted from a computed value) for goal
+    /// types IGoalProgressCalculator can derive from existing domain data
+    /// (GradePointAverage, StudyHours, ProjectDeadline). For goal types
+    /// with no such source (e.g. ChapterCount today), this is the only
+    /// signal of progress and is updated manually — e.g. via a future
+    /// Goals CRUD endpoint — through UpdateProgress. Defaults to 0.
+    /// </summary>
+    public decimal CurrentValue { get; private set; }
 
     /// <summary>Optional deadline.</summary>
     public DateTime? TargetDateUtc { get; private set; }
@@ -66,6 +81,21 @@ public class Goal : BaseEntity
             throw new DomainException("Target value must be greater than zero.");
         TargetValue = targetValue;
         TargetDateUtc = targetDateUtc;
+        MarkModified();
+    }
+
+    /// <summary>
+    /// Manually updates CurrentValue for goal types with no computable
+    /// domain source. Not meant to be called for goal types
+    /// IGoalProgressCalculator derives live (GradePointAverage,
+    /// StudyHours, ProjectDeadline) — CurrentValue would just go stale
+    /// for those, since the calculator never reads it back into Goal.
+    /// </summary>
+    public void UpdateProgress(decimal currentValue)
+    {
+        if (currentValue < 0)
+            throw new DomainException("Current value cannot be negative.");
+        CurrentValue = currentValue;
         MarkModified();
     }
 }

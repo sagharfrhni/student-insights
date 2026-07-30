@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Common\5zvsnidb.cfc~" />
-  </ItemGroup>
-
 </Project>

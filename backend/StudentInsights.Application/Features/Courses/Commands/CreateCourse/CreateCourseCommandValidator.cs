@@ -16,6 +16,10 @@ public class CreateCourseCommandValidator : AbstractValidator<CreateCourseComman
             .NotEmpty().WithMessage("Course name is required.")
             .MaximumLength(200).WithMessage("Course name must not exceed 200 characters.");
 
+        RuleFor(x => x.Semester)
+            .NotEmpty().WithMessage("Semester is required.")
+            .MaximumLength(100).WithMessage("Semester must not exceed 100 characters.");
+
         RuleFor(x => x.Credits)
             .GreaterThan(0).WithMessage("Credits must be greater than zero.");
 

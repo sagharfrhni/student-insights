@@ -22,10 +22,6 @@ public class CreateLearningActivityCommandValidator : AbstractValidator<CreateLe
         RuleFor(x => x.Type)
             .IsInEnum().WithMessage("A valid activity type is required.");
 
-        RuleFor(x => x.DueDateUtc)
-            .Must(dueDateUtc => dueDateUtc >= DateTime.UtcNow)
-            .WithMessage("Due date cannot be in the past.");
-
         RuleFor(x => x.Priority)
             .IsInEnum().WithMessage("A valid priority is required.");
 

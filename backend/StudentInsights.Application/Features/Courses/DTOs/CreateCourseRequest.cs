@@ -7,5 +7,6 @@
 /// </summary>
 public record CreateCourseRequest(
     string Name,
+    string Semester,
     int Credits,
     string? InstructorName);

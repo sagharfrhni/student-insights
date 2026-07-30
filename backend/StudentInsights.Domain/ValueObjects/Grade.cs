@@ -19,6 +19,9 @@ public readonly record struct Grade
         if (value < MinValue || value > MaxValue)
             throw new DomainException($"Grade must be between {MinValue} and {MaxValue}.");
 
+        if (decimal.Round(value, 2) != value)
+            throw new DomainException("Grade cannot have more than two decimal places.");
+
         Value = value;
     }
 

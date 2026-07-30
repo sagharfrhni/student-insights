@@ -98,6 +98,11 @@ namespace StudentInsights.Infrastructure.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
+                    b.Property<string>("Semester")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<DateTime?>("UpdatedAtUtc")
                         .HasColumnType("datetime2");
 
@@ -106,7 +111,9 @@ namespace StudentInsights.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "Name", "Semester")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("Courses");
                 });
@@ -159,9 +166,11 @@ namespace StudentInsights.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseId");
-
                     b.HasIndex("UserId", "ExamDateUtc");
+
+                    b.HasIndex("CourseId", "Title", "ExamDateUtc")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("Exams");
                 });
@@ -174,6 +183,10 @@ namespace StudentInsights.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("CurrentValue")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime?>("DeletedAtUtc")
                         .HasColumnType("datetime2");
@@ -212,7 +225,15 @@ namespace StudentInsights.Infrastructure.Migrations
 
                     b.HasIndex("RelatedActivityId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "RelatedActivityId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Goals_UserId_RelatedActivityId_ProjectDeadlineUnique")
+                        .HasFilter("[IsDeleted] = 0 AND [Type] = 'ProjectDeadline'");
+
+                    b.HasIndex("UserId", "Type")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Goals_UserId_Type_GpaUnique")
+                        .HasFilter("[IsDeleted] = 0 AND [Type] = 'GradePointAverage'");
 
                     b.ToTable("Goals");
                 });
@@ -244,6 +265,9 @@ namespace StudentInsights.Infrastructure.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastCompletedAtUtc")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Priority")
                         .IsRequired()
@@ -283,9 +307,11 @@ namespace StudentInsights.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseId");
-
                     b.HasIndex("UserId", "DueDateUtc");
+
+                    b.HasIndex("CourseId", "Title", "DueDateUtc")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("LearningActivities");
                 });
@@ -339,6 +365,8 @@ namespace StudentInsights.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId", "IsRead");
+
+                    b.HasIndex("UserId", "Type", "SourceId");
 
                     b.ToTable("Notifications");
                 });
@@ -480,8 +508,8 @@ namespace StudentInsights.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Notes")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
@@ -502,6 +530,8 @@ namespace StudentInsights.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
+                    b.HasIndex("UserId", "CourseId");
+
                     b.HasIndex("UserId", "StudyDateUtc");
 
                     b.ToTable("StudyLogs");
@@ -517,7 +547,8 @@ namespace StudentInsights.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Key")
                         .IsRequired()

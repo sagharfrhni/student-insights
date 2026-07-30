@@ -65,8 +65,20 @@ public class LearningActivity : BaseEntity
     /// <summary>Optional external resource link.</summary>
     public string? ResourceLink { get; private set; }
 
-    /// <summary>Completion time (UTC).</summary>
+    /// <summary>Completion time (UTC) of the *current* completion; cleared by Reopen(). Null unless Status is Completed.</summary>
     public DateTime? CompletedAtUtc { get; private set; }
+
+    /// <summary>
+    /// Completion time (UTC) of the most recent completion, ever — unlike
+    /// CompletedAtUtc, this is never cleared by Reopen(). Exists solely so
+    /// the Notification module's overdue-activity duplicate check (see
+    /// NotificationFactory/NotificationGenerationJob) can tell whether an
+    /// existing OverdueActivity notification predates a since-cleared
+    /// completion, and therefore allow a fresh one once a reopened
+    /// activity becomes overdue again. Not surfaced in LearningActivityDto
+    /// — no consumer outside the Notification module needs it.
+    /// </summary>
+    public DateTime? LastCompletedAtUtc { get; private set; }
 
     public void UpdateDetails(string title, string? description, string? resourceLink)
     {
@@ -102,6 +114,7 @@ public class LearningActivity : BaseEntity
     {
         Status = ActivityStatus.Completed;
         CompletedAtUtc = DateTime.UtcNow;
+        LastCompletedAtUtc = CompletedAtUtc;
         MarkModified();
     }
 

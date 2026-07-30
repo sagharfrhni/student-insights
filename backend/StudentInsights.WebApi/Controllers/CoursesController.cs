@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using StudentInsights.Application.Common.Models;
 using StudentInsights.Application.Features.Courses.Commands.CreateCourse;
 using StudentInsights.Application.Features.Courses.Commands.DeleteCourse;
+using StudentInsights.Application.Features.Courses.Commands.RecordCourseGrade;
 using StudentInsights.Application.Features.Courses.Commands.UpdateCourse;
 using StudentInsights.Application.Features.Courses.DTOs;
 using StudentInsights.Application.Features.Courses.Queries.GetCourseById;
@@ -31,16 +32,16 @@ public class CoursesController : ControllerBase
     }
 
     /// <summary>Creates a new course for the current user.</summary>
-    /// <param name="request">The course's name, credits, and instructor.</param>
+    /// <param name="request">The course's name, semester, credits, and instructor.</param>
     /// <returns>The created course.</returns>
     /// <response code="201">The course was created.</response>
-    /// <response code="400">The request failed validation.</response>
+    /// <response code="400">The request failed validation, or duplicates an existing course in the same semester.</response>
     [HttpPost]
     public async Task<ActionResult<CourseDto>> CreateCourse(
         [FromBody] CreateCourseRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new CreateCourseCommand(request.Name, request.Credits, request.InstructorName);
+        var command = new CreateCourseCommand(request.Name, request.Semester, request.Credits, request.InstructorName);
         var course = await _mediator.Send(command, cancellationToken);
 
         return CreatedAtAction(nameof(GetCourseById), new { id = course.Id }, course);
@@ -59,26 +60,28 @@ public class CoursesController : ControllerBase
         return Ok(course);
     }
 
-    /// <summary>Gets a paged list of the current user's courses, newest first.</summary>
+    /// <summary>Gets a paged list of the current user's courses, newest first, optionally filtered by semester.</summary>
     /// <param name="pagination">Page number and page size.</param>
+    /// <param name="semester">Optional semester to filter by (e.g. "Fall 2026").</param>
     /// <returns>A page of courses.</returns>
     /// <response code="200">The page was retrieved.</response>
     [HttpGet]
     public async Task<ActionResult<PaginatedResult<CourseDto>>> GetCourses(
         [FromQuery] PaginationParams pagination,
+        [FromQuery] string? semester,
         CancellationToken cancellationToken)
     {
-        var courses = await _mediator.Send(new GetCoursesQuery(pagination), cancellationToken);
+        var courses = await _mediator.Send(new GetCoursesQuery(pagination, semester), cancellationToken);
 
         return Ok(courses);
     }
 
-    /// <summary>Updates a course owned by the current user.</summary>
+    /// <summary>Updates a course owned by the current user. Semester cannot be changed after creation.</summary>
     /// <param name="id">The course id.</param>
     /// <param name="request">The course's new name, credits, and instructor.</param>
     /// <returns>The updated course.</returns>
     /// <response code="200">The course was updated.</response>
-    /// <response code="400">The request failed validation.</response>
+    /// <response code="400">The request failed validation, or duplicates an existing course in the same semester.</response>
     /// <response code="404">The course does not exist or is not owned by the current user.</response>
     [HttpPut("{id:guid}")]
     public async Task<ActionResult<CourseDto>> UpdateCourse(
@@ -87,6 +90,25 @@ public class CoursesController : ControllerBase
         CancellationToken cancellationToken)
     {
         var command = new UpdateCourseCommand(id, request.Name, request.Credits, request.InstructorName);
+        var course = await _mediator.Send(command, cancellationToken);
+
+        return Ok(course);
+    }
+
+    /// <summary>Records (or overwrites) the final grade of a course owned by the current user.</summary>
+    /// <param name="id">The course id.</param>
+    /// <param name="request">The course's final grade (0-20).</param>
+    /// <returns>The updated course.</returns>
+    /// <response code="200">The grade was recorded.</response>
+    /// <response code="400">The request failed validation.</response>
+    /// <response code="404">The course does not exist or is not owned by the current user.</response>
+    [HttpPatch("{id:guid}/grade")]
+    public async Task<ActionResult<CourseDto>> RecordCourseGrade(
+        Guid id,
+        [FromBody] RecordCourseGradeRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new RecordCourseGradeCommand(id, request.Grade);
         var course = await _mediator.Send(command, cancellationToken);
 
         return Ok(course);

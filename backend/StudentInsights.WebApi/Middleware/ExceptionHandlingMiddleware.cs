@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudentInsights.Application.Common.Exceptions;
 using StudentInsights.Domain.Common;
 
@@ -89,6 +90,59 @@ public class ExceptionHandlingMiddleware
             {
                 Status = StatusCodes.Status400BadRequest,
                 Title = "Bad Request",
+                Detail = ex.Message
+            });
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            // The Domain's RowVersion optimistic-concurrency token (see
+            // BaseEntity / OnModelCreating) exists specifically to catch
+            // simultaneous edits to the same record. Without this clause,
+            // a real conflict fell through to the generic 500 handler
+            // below — technically correct, but useless to a client, which
+            // has no way to distinguish "someone else edited this" from
+            // "the server broke." 409 is something a client can actually
+            // act on: reload the latest version and retry.
+            _logger.LogWarning(ex, "Concurrency conflict on {Path}", context.Request.Path);
+
+            if (context.Response.HasStarted)
+            {
+                throw;
+            }
+
+            context.Response.ContentType = "application/problem+json";
+            context.Response.StatusCode = StatusCodes.Status409Conflict;
+            await context.Response.WriteAsJsonAsync(new ProblemDetails
+            {
+                Status = StatusCodes.Status409Conflict,
+                Title = "Concurrency Conflict",
+                Detail = "This record was modified by another request. Reload the latest version and try again."
+            });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            // Thrown by ICurrentUserService.UserId (see CurrentUserService)
+            // when a request reaches a handler without a resolvable user
+            // claim. In normal operation this should never happen — every
+            // controller that resolves UserId is behind [Authorize], so
+            // JWT validation already runs first — but if it ever does
+            // (e.g. a future controller misses [Authorize] by mistake),
+            // it should surface as 401, not fall through to a generic 500
+            // that hides an authentication problem behind a server-error
+            // response.
+            _logger.LogWarning(ex, "Unauthorized access on {Path}", context.Request.Path);
+
+            if (context.Response.HasStarted)
+            {
+                throw;
+            }
+
+            context.Response.ContentType = "application/problem+json";
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(new ProblemDetails
+            {
+                Status = StatusCodes.Status401Unauthorized,
+                Title = "Unauthorized",
                 Detail = ex.Message
             });
         }

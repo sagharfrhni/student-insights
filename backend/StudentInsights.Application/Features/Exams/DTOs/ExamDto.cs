@@ -6,9 +6,9 @@ namespace StudentInsights.Application.Features.Exams.DTOs;
 /// denormalized display field (from Exam.Course.Name) so API consumers
 /// don't need a second round-trip just to show which course an exam
 /// belongs to. Grade is projected out of the Grade value object as a
-/// plain decimal?, the same flattening CourseDto.FinalGrade uses —
-/// read-only here, since no command currently sets it (RecordGrade
-/// exists on the entity but is intentionally not wired up yet).
+/// plain decimal?, the same flattening CourseDto.FinalGrade uses. Set
+/// via the dedicated PATCH /{id}/grade endpoint (RecordExamGradeCommand),
+/// same separation UpdateGoalProgressCommand uses versus UpdateGoalCommand.
 /// </summary>
 public record ExamDto(
     Guid Id,

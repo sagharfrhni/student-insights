@@ -28,6 +28,9 @@ public class GetLearningActivitiesQueryHandler : IRequestHandler<GetLearningActi
         if (request.CourseId is not null)
             query = query.Where(la => la.CourseId == request.CourseId);
 
+        if (!string.IsNullOrWhiteSpace(request.Semester))
+            query = query.Where(la => la.Course.Semester == request.Semester);
+
         if (request.Status is not null)
             query = query.Where(la => la.Status == request.Status);
 

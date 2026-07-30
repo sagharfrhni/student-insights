@@ -25,15 +25,16 @@ public class Course : BaseEntity
     {
     } // EF Core
 
-    private Course(Guid userId, string name, int credits, string? instructorName)
+    private Course(Guid userId, string name, int credits, string semester, string? instructorName)
     {
         UserId = userId;
         Name = name;
         Credits = credits;
+        Semester = semester;
         InstructorName = instructorName;
     }
 
-    public static Course Create(User user, string name, int credits, string? instructorName = null)
+    public static Course Create(User user, string name, int credits, string semester, string? instructorName = null)
     {
         if (user is null)
             throw new DomainException("User is required.");
@@ -41,8 +42,10 @@ public class Course : BaseEntity
             throw new DomainException("Course name is required.");
         if (credits <= 0)
             throw new DomainException("Credits must be greater than zero.");
+        if (string.IsNullOrWhiteSpace(semester))
+            throw new DomainException("Semester is required.");
 
-        return new Course(user.Id, name.Trim(), credits, instructorName?.Trim());
+        return new Course(user.Id, name.Trim(), credits, semester.Trim(), instructorName?.Trim());
     }
 
     public Guid UserId { get; private set; }
@@ -54,6 +57,18 @@ public class Course : BaseEntity
 
     /// <summary>Number of academic credits.</summary>
     public int Credits { get; private set; }
+
+    /// <summary>
+    /// The academic term this course belongs to (e.g. "Fall 2026"). Free-text
+    /// by design rather than a structured Year/Term pair — a single label is
+    /// enough to scope GPA and course lists to a term, and a rigid
+    /// calendar/enum representation would be over-engineering for what this
+    /// value is used for today. Required at creation and immutable
+    /// afterwards: a course shouldn't silently move between terms after the
+    /// fact, the same "immutable after creation" reasoning already applied to
+    /// Notification.Type and Goal.Type.
+    /// </summary>
+    public string Semester { get; private set; } = string.Empty;
 
     /// <summary>Instructor full name.</summary>
     public string? InstructorName { get; private set; }
