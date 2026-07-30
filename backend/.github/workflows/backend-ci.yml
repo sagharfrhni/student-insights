@@ -1,0 +1,42 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore StudentInsights.sln
+
+      - name: Build solution
+        run: dotnet build StudentInsights.sln --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test StudentInsights.sln --configuration Release --no-build --verbosity normal
+
+      - name: Publish Web API
+        run: >
+          dotnet publish
+          StudentInsights.WebApi/StudentInsights.WebApi.csproj
+          --configuration Release
+          --no-build
+          --output ./publish
